@@ -18,6 +18,7 @@ Web application that transforms PCF CSV datasets into professional report previe
 ## Project Structure
 - `src/app`: routes and server entrypoints
 - `src/components`: dashboard, upload, report, and chart components
+- `docs`: project documentation, report references, and sample source files
 - `src/lib/pcf`: PCF domain layers
 - `src/lib/reporting`: shared rendering and PDF-related modules
 - `src/lib/jobs`: temporary report job store

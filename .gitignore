@@ -24,6 +24,7 @@
 .DS_Store
 *.pem
 .tmp/
+docs/assets/BrandBook Footprint Mappa.pdf
 
 # debug
 npm-debug.log*
@@ -40,3 +41,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# docs
+docs/assets/*.docx
