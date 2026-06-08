@@ -1,5 +1,5 @@
-import { buildStubPdfResponse } from "@/fixtures/reporting/stub-pdf-response";
 import { reportJobStore } from "@/lib/jobs/report-job-store";
+import { buildPdfPlaceholderResponse } from "@/lib/reporting/pdf";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,5 +16,10 @@ export async function GET(_request: Request, { params }: PdfRouteContext) {
     return Response.json({ error: "Report job not found." }, { status: 404 });
   }
 
-  return Response.json(buildStubPdfResponse(job));
+  return Response.json(
+    buildPdfPlaceholderResponse({
+      jobId: job.jobId,
+      reportType: job.reportType,
+    }),
+  );
 }

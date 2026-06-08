@@ -4,15 +4,15 @@ import { useState, useTransition } from "react";
 
 export function UploadPanel() {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
 
   async function handleSubmit(formData: FormData) {
-    setError(null);
+    setErrors([]);
 
     const file = formData.get("file");
     if (!(file instanceof File) || file.size === 0) {
-      setError("Choose a CSV file to create a Phase 1 stub report.");
+      setErrors(["Choose a CSV file to create a PCF report job."]);
       return;
     }
 
@@ -23,14 +23,16 @@ export function UploadPanel() {
       });
 
       const payload = (await response.json()) as
-        | { error: string }
+        | { error: string; details?: string[] }
         | { previewPath: string };
 
       if (!response.ok || !("previewPath" in payload)) {
-        setError(
+        setErrors(
           "error" in payload
-            ? payload.error
-            : "The upload route did not return a preview path.",
+            ? payload.details && payload.details.length > 0
+              ? payload.details
+              : [payload.error]
+            : ["The upload route did not return a preview path."],
         );
         return;
       }
@@ -49,8 +51,9 @@ export function UploadPanel() {
           Create a temporary PCF report job
         </h2>
         <p className="text-sm leading-6 text-[var(--muted)]">
-          Phase 1 does not parse the CSV yet. It validates that a file exists,
-          then writes a stubbed PCF report bundle into <code>.tmp/reports</code>.
+          Upload a PCF CSV with the required aggregate emissions columns and the
+          app will validate, normalize, and persist the report bundle into{" "}
+          <code>.tmp/reports</code>.
         </p>
       </div>
 
@@ -60,7 +63,8 @@ export function UploadPanel() {
             CSV upload
           </span>
           <span className="text-sm text-[var(--muted)]">
-            {selectedFileName ?? "Choose a `.csv` file for the stub upload flow."}
+            {selectedFileName ??
+              "Choose a `.csv` file with the required PCF aggregate columns."}
           </span>
           <input
             className="text-sm text-[var(--muted)] file:mr-4 file:rounded-full file:border-0 file:bg-[var(--app-accent-1)] file:px-4 file:py-2 file:font-medium file:text-[#041282]"
@@ -78,13 +82,18 @@ export function UploadPanel() {
             Flow wired: upload to schema to normalization to metrics to report
             definition to temp store.
           </div>
-          <div>Current data: stubbed PCF content only.</div>
+          <div>Current data: real PCF aggregate CSV ingestion only.</div>
         </div>
 
-        {error ? (
-          <p className="rounded-xl border border-[#ff7983]/40 bg-[#ff7983]/12 px-4 py-3 text-sm text-[#ffd4d8]">
-            {error}
-          </p>
+        {errors.length > 0 ? (
+          <div className="rounded-xl border border-[#ff7983]/40 bg-[#ff7983]/12 px-4 py-3 text-sm text-[#ffd4d8]">
+            <p className="font-medium">Upload validation failed.</p>
+            <ul className="mt-2 list-disc space-y-1 pl-5">
+              {errors.map((error) => (
+                <li key={error}>{error}</li>
+              ))}
+            </ul>
+          </div>
         ) : null}
 
         <button
@@ -92,7 +101,7 @@ export function UploadPanel() {
           type="submit"
           disabled={isPending}
         >
-          {isPending ? "Creating report job..." : "Create Phase 1 Report Job"}
+          {isPending ? "Creating report job..." : "Create PCF Report Job"}
         </button>
       </form>
     </section>

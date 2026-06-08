@@ -15,8 +15,8 @@ export default function Home() {
                 Serious architecture, lightweight implementation.
               </h1>
               <p className="max-w-2xl text-base leading-7 text-[var(--muted)] lg:text-lg">
-                Phase 1 scaffolds the PCF MVP with clear report boundaries,
-                temporary job storage, and a hydration-independent preview route.
+                Upload a PCF CSV, review a concise summary, and move into a
+                hydration-independent report preview built for future PDF export.
               </p>
             </div>
             <div className="rounded-[1.5rem] border border-white/10 bg-white/8 px-5 py-4 text-sm text-[var(--muted)]">

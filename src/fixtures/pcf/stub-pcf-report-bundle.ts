@@ -58,7 +58,10 @@ export function buildStubPcfSchemaValidation(
     sourceFileName: upload.fileName,
     requiredHeaders: [...PCF_REQUIRED_HEADERS],
     receivedHeaders: [...PCF_REQUIRED_HEADERS],
-    rowCount: 0,
+    missingHeaders: [],
+    parsedRowCount: 0,
+    validRowCount: 0,
+    invalidRows: [],
     isValid: true,
     errors: [],
     warnings: [

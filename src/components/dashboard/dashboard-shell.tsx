@@ -3,9 +3,9 @@ import { DashboardEmissionsPlaceholder } from "@/components/charts/dashboard/das
 
 const deliveryCards = [
   {
-    label: "Phase",
-    value: "01",
-    detail: "Scaffold only. No real PCF parsing yet.",
+    label: "Flow",
+    value: "PCF",
+    detail: "Real CSV parsing with validation, normalization, and report metrics.",
   },
   {
     label: "Storage",
@@ -24,15 +24,15 @@ export function DashboardShell() {
     <section className="rounded-[2rem] border border-white/12 bg-white/7 p-6 shadow-[0_20px_80px_rgba(4,18,130,0.32)] backdrop-blur">
       <div className="mb-6 flex flex-col gap-3">
         <p className="text-sm font-medium uppercase tracking-[0.22em] text-[var(--app-accent-1)]">
-          Dashboard
+          Summary
         </p>
         <h2 className="text-2xl font-semibold text-white">
-          MVP-first shell with explicit report boundaries
+          Lightweight upload summary with explicit report boundaries
         </h2>
         <p className="max-w-3xl text-sm leading-6 text-[var(--muted)]">
-          This app route is the interactive surface. The printable report stays
-          separate and server-rendered so the future PDF path does not depend on
-          client hydration.
+          This screen stays intentionally lightweight. The generated report
+          remains the main product, while the preview route stays server-rendered
+          and ready for the future PDF path.
         </p>
       </div>
 
@@ -51,10 +51,10 @@ export function DashboardShell() {
         <div className="mb-4 flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-white">
-              Dashboard chart boundary
+              Summary chart boundary
             </h3>
             <p className="text-sm text-[var(--muted)]">
-              Client-side placeholder chart for interactive dashboard behavior.
+              Client-side placeholder chart for lightweight summary behavior.
             </p>
           </div>
           <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1 text-xs uppercase tracking-[0.18em] text-[var(--app-accent-3)]">

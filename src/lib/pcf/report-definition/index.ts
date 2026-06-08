@@ -18,25 +18,29 @@ export function buildPcfReportDefinition({
   normalizedDataset,
   derivedMetrics,
 }: BuildPcfReportDefinitionOptions): ReportDefinition {
+  const methodologyDescription =
+    schemaValidation.warnings[0] ??
+    "Uploaded CSV values are treated as already calculated emissions and summarized without recalculating footprint methodology.";
+
   return {
     reportId: jobId,
     reportType: "pcf",
     title: "Product Carbon Footprint Report",
     summary:
-      "Phase 1 preview generated from a stubbed PCF report bundle. The route and storage boundaries are live; CSV parsing is deferred to Phase 2.",
+      `Generated from uploaded PCF data in ${normalizedDataset.sourceFileName} for ${derivedMetrics.totalProducts} products.`,
     theme: "relats",
     sections: [
       {
         id: "overview",
         kind: "hero",
         title: "Results overview",
-        description: `${derivedMetrics.totalProducts} products are available in the temporary dataset sourced from ${normalizedDataset.sourceFileName}.`,
+        description: `${derivedMetrics.totalProducts} products are available in the uploaded dataset sourced from ${normalizedDataset.sourceFileName}.`,
       },
       {
         id: "methodology",
         kind: "methodology",
         title: "Methodological approach",
-        description: schemaValidation.warnings[0],
+        description: methodologyDescription,
       },
       {
         id: "breakdown",
@@ -49,7 +53,7 @@ export function buildPcfReportDefinition({
         kind: "table",
         title: "Detailed product analysis",
         description:
-          "The report definition already has a dedicated place for product-level analysis, even though the current route renders a stub preview.",
+          "The report definition keeps a dedicated place for product-level analysis based on the uploaded aggregate lifecycle totals.",
       },
     ],
   };

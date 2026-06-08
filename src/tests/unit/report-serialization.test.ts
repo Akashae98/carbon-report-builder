@@ -1,26 +1,22 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  buildStubPcfDerivedMetrics,
-  buildStubPcfNormalizedDataset,
-  buildStubPcfSchemaValidation,
-} from "@/fixtures/pcf/stub-pcf-report-bundle";
+import { buildPcfDerivedMetrics, buildPcfNormalizedDataset } from "@/lib/pcf/normalization";
 import { buildPcfReportDefinition } from "@/lib/pcf/report-definition";
+import { parseAndValidatePcfCsv } from "@/lib/pcf/schema";
+import { readSamplePcfCsv } from "@/tests/helpers/sample-pcf";
 import type { PcfReportJobRecord } from "@/types";
 
 describe("report job serialization", () => {
-  it("stays JSON serializable across the Phase 1 PCF pipeline", () => {
-    const schemaValidation = buildStubPcfSchemaValidation({
-      fileName: "sample.csv",
-      contentType: "text/csv",
-      size: 10,
-      receivedAt: "2026-06-08T00:00:00.000Z",
-    });
-    const normalizedDataset = buildStubPcfNormalizedDataset(schemaValidation);
-    const derivedMetrics = buildStubPcfDerivedMetrics(normalizedDataset);
+  it("stays JSON serializable across the real PCF pipeline", () => {
+    const { rows, validation } = parseAndValidatePcfCsv(
+      readSamplePcfCsv(),
+      "sample_pcf.csv",
+    );
+    const normalizedDataset = buildPcfNormalizedDataset(validation, rows);
+    const derivedMetrics = buildPcfDerivedMetrics(normalizedDataset);
     const reportDefinition = buildPcfReportDefinition({
       jobId: "serialize-me",
-      schemaValidation,
+      schemaValidation: validation,
       normalizedDataset,
       derivedMetrics,
     });
@@ -31,12 +27,12 @@ describe("report job serialization", () => {
       status: "draft",
       createdAt: "2026-06-08T00:00:00.000Z",
       upload: {
-        fileName: "sample.csv",
+        fileName: "sample_pcf.csv",
         contentType: "text/csv",
-        size: 10,
+        size: readSamplePcfCsv().length,
         receivedAt: "2026-06-08T00:00:00.000Z",
       },
-      schemaValidation,
+      schemaValidation: validation,
       normalizedDataset,
       derivedMetrics,
       reportDefinition,

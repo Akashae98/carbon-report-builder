@@ -39,7 +39,7 @@ export function ReportShell({ job, preview }: ReportShellProps) {
               {job.derivedMetrics.totalProducts}
             </p>
             <p className="mt-2 text-sm text-black/65">
-              Stubbed sample rows available for preview rendering.
+              Uploaded PCF rows available for report rendering.
             </p>
           </article>
           <article className="rounded-[1.5rem] bg-[var(--report-panel)] p-4">
@@ -50,7 +50,7 @@ export function ReportShell({ job, preview }: ReportShellProps) {
               {formatCompactNumber(job.derivedMetrics.totalEmissions)} kgCO2e
             </p>
             <p className="mt-2 text-sm text-black/65">
-              Aggregate from the temporary PCF preview dataset.
+              Aggregated from the uploaded PCF dataset.
             </p>
           </article>
           <article className="rounded-[1.5rem] bg-[var(--report-panel)] p-4">
@@ -78,8 +78,8 @@ export function ReportShell({ job, preview }: ReportShellProps) {
               Lifecycle stage breakdown
             </h2>
             <p className="mt-2 text-sm leading-6 text-black/70">
-              Phase 1 uses a static SVG chart so preview and future PDF output
-              share the same safe rendering primitive.
+              This static SVG chart keeps preview and future PDF output aligned
+              without relying on client-side chart rendering.
             </p>
           </div>
 
@@ -117,13 +117,13 @@ export function ReportShell({ job, preview }: ReportShellProps) {
 
       <footer className="rounded-[2rem] border border-black/8 bg-white p-8 shadow-[0_20px_70px_rgba(28,28,28,0.06)]">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--report-accent)]">
-          Phase 1 status
+          Preview status
         </p>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-black/70">
           This preview route already reads its payload from the filesystem job
-          store and renders without client-only chart dependencies. Phase 2 can
-          replace the stub dataset with real PCF parsing without restructuring
-          the route layer.
+          store and renders without client-only chart dependencies. The
+          generated report remains the primary product, with PDF export reserved
+          for the next implementation step.
         </p>
       </footer>
     </div>

@@ -1,12 +1,9 @@
 import { randomUUID } from "node:crypto";
 
 import { buildPcfReportDefinition } from "@/lib/pcf/report-definition";
-import {
-  buildStubPcfDerivedMetrics,
-  buildStubPcfNormalizedDataset,
-  buildStubPcfSchemaValidation,
-} from "@/fixtures/pcf/stub-pcf-report-bundle";
 import { reportJobStore } from "@/lib/jobs/report-job-store";
+import { buildPcfDerivedMetrics, buildPcfNormalizedDataset } from "@/lib/pcf/normalization";
+import { getPcfValidationDetails, parseAndValidatePcfCsv } from "@/lib/pcf/schema";
 import type { PcfReportJobRecord, ReportUploadMetadata } from "@/types";
 
 export const runtime = "nodejs";
@@ -18,7 +15,7 @@ export async function POST(request: Request) {
 
   if (!(file instanceof File)) {
     return Response.json(
-      { error: "A CSV file is required for Phase 1 uploads." },
+      { error: "A CSV file is required to create a PCF report." },
       { status: 400 },
     );
   }
@@ -30,13 +27,25 @@ export async function POST(request: Request) {
     receivedAt: new Date().toISOString(),
   };
 
+  const csvText = await file.text();
+  const { rows, validation } = parseAndValidatePcfCsv(csvText, upload.fileName);
+
+  if (!validation.isValid) {
+    return Response.json(
+      {
+        error: "CSV validation failed.",
+        details: getPcfValidationDetails(validation),
+      },
+      { status: 400 },
+    );
+  }
+
   const jobId = randomUUID();
-  const schemaValidation = buildStubPcfSchemaValidation(upload);
-  const normalizedDataset = buildStubPcfNormalizedDataset(schemaValidation);
-  const derivedMetrics = buildStubPcfDerivedMetrics(normalizedDataset);
+  const normalizedDataset = buildPcfNormalizedDataset(validation, rows);
+  const derivedMetrics = buildPcfDerivedMetrics(normalizedDataset);
   const reportDefinition = buildPcfReportDefinition({
     jobId,
-    schemaValidation,
+    schemaValidation: validation,
     normalizedDataset,
     derivedMetrics,
   });
@@ -47,7 +56,7 @@ export async function POST(request: Request) {
     status: "draft",
     createdAt: new Date().toISOString(),
     upload,
-    schemaValidation,
+    schemaValidation: validation,
     normalizedDataset,
     derivedMetrics,
     reportDefinition,
@@ -61,7 +70,7 @@ export async function POST(request: Request) {
       previewPath: `/reports/${jobId}`,
       reportType: job.reportType,
       status: job.status,
-      message: "Phase 1 stub report created successfully.",
+      message: "PCF report job created successfully.",
     },
     { status: 201 },
   );

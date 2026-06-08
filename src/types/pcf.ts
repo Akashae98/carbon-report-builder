@@ -1,12 +1,35 @@
+export interface PcfValidationIssue {
+  rowNumber: number;
+  field: string;
+  value: string;
+  message: string;
+}
+
 export interface PcfSchemaValidationResult {
   reportType: "pcf";
   sourceFileName: string;
   requiredHeaders: string[];
   receivedHeaders: string[];
-  rowCount: number;
+  missingHeaders: string[];
+  parsedRowCount: number;
+  validRowCount: number;
   isValid: boolean;
+  invalidRows: PcfValidationIssue[];
   errors: string[];
   warnings: string[];
+}
+
+export interface PcfParsedAggregateRow {
+  sourceRowNumber: number;
+  product: string;
+  functional_unit: string;
+  total_emissions: number;
+  total_materials: number;
+  total_manufacturing: number;
+  total_transport: number;
+  total_distribution: number;
+  total_use: number;
+  total_end_of_life: number;
 }
 
 export interface PcfNormalizedProduct {
