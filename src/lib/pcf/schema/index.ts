@@ -45,13 +45,13 @@ function parseNumericValue(input: string) {
   const value = input.trim();
 
   if (!value) {
-    return { ok: false as const, message: "Value is required." };
+    return { ok: false as const, message: "El valor es obligatorio." };
   }
 
   if (value.includes(",") && value.includes(".")) {
     return {
       ok: false as const,
-      message: "Mixed decimal separators are not supported.",
+      message: "No se admiten separadores decimales mezclados.",
     };
   }
 
@@ -59,7 +59,7 @@ function parseNumericValue(input: string) {
   const parsed = Number(normalized);
 
   if (!Number.isFinite(parsed)) {
-    return { ok: false as const, message: "Value must be a valid number." };
+    return { ok: false as const, message: "El valor debe ser un número válido." };
   }
 
   return { ok: true as const, value: parsed };
@@ -78,10 +78,10 @@ function formatParseErrors(errors: Papa.ParseError[]) {
   return errors.map((error) => {
     const rowLabel =
       typeof error.row === "number" && error.row >= 0
-        ? ` row ${error.row + 2}`
+        ? ` en la fila ${error.row + 2}`
         : "";
 
-    return `CSV parse error at${rowLabel}: ${error.message}`;
+    return `Error al interpretar el CSV${rowLabel}: ${error.message}`;
   });
 }
 
@@ -113,7 +113,12 @@ export function parseAndValidatePcfCsv(
 
       if (!product) {
         invalidRows.push(
-          createValidationIssue(rowNumber, "product", row.product ?? "", "Product is required."),
+          createValidationIssue(
+            rowNumber,
+            "product",
+            row.product ?? "",
+            "El producto es obligatorio.",
+          ),
         );
       }
 
@@ -123,7 +128,7 @@ export function parseAndValidatePcfCsv(
             rowNumber,
             "functional_unit",
             row.functional_unit ?? "",
-            "Functional unit is required.",
+            "La unidad funcional es obligatoria.",
           ),
         );
       }
@@ -168,11 +173,11 @@ export function parseAndValidatePcfCsv(
   const errors = [...parseErrors];
 
   if (missingHeaders.length > 0) {
-    errors.push(`Missing required headers: ${missingHeaders.join(", ")}`);
+    errors.push(`Faltan columnas obligatorias: ${missingHeaders.join(", ")}`);
   }
 
   if (rows.length === 0) {
-    errors.push("The CSV does not contain any valid PCF data rows.");
+    errors.push("El CSV no contiene ninguna fila de datos PCF válida.");
   }
 
   const validation: PcfSchemaValidationResult = {
@@ -203,7 +208,7 @@ export function getPcfValidationDetails(validation: PcfSchemaValidationResult) {
     details.push(
       ...validation.invalidRows.map(
         (issue) =>
-          `Row ${issue.rowNumber}, ${issue.field}: ${issue.message} (${issue.value || "empty"})`,
+          `Fila ${issue.rowNumber}, ${issue.field}: ${issue.message} (${issue.value || "vacío"})`,
       ),
     );
   }
@@ -215,6 +220,6 @@ export function getPcfValidationDetails(validation: PcfSchemaValidationResult) {
   const remainingCount = details.length - MAX_VALIDATION_DETAILS;
   return [
     ...details.slice(0, MAX_VALIDATION_DETAILS),
-    `${remainingCount} additional validation issue${remainingCount === 1 ? "" : "s"} not shown.`,
+    `${remainingCount} ${remainingCount === 1 ? "problema adicional no mostrado" : "problemas adicionales no mostrados"}.`,
   ];
 }

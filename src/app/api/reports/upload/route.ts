@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
   if (!(file instanceof File)) {
     return Response.json(
-      { error: "A CSV file is required to create a PCF report." },
+      { error: "Se necesita un archivo CSV para crear un informe PCF." },
       { status: 400 },
     );
   }
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
   if (!validation.isValid) {
     return Response.json(
       {
-        error: "CSV validation failed.",
+        error: "No se pudo validar el CSV.",
         details: getPcfValidationDetails(validation),
       },
       { status: 400 },
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
       previewPath: `/reports/${jobId}`,
       reportType: job.reportType,
       status: job.status,
-      message: "PCF report job created successfully.",
+      message: "El informe PCF se ha creado correctamente.",
     },
     { status: 201 },
   );

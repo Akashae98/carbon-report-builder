@@ -75,7 +75,7 @@ describe("route scaffolding", () => {
     const payload = (await response.json()) as { error: string; details: string[] };
 
     expect(response.status).toBe(400);
-    expect(payload.error).toBe("CSV validation failed.");
+    expect(payload.error).toBe("No se pudo validar el CSV.");
     expect(payload.details.some((detail) => detail.includes("total_emissions"))).toBe(
       true,
     );

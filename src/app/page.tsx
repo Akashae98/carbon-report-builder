@@ -1,37 +1,31 @@
-import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { BackgroundEmissions } from "@/components/home/background-emissions";
+import { HomeHero } from "@/components/home/home-hero";
+import { MinimalHeader } from "@/components/home/minimal-header";
+import { ReportPreviewCard } from "@/components/home/report-preview-card";
 import { UploadPanel } from "@/components/upload/upload-panel";
 
 export default function Home() {
   return (
-    <main className="app-shell flex min-h-screen flex-col">
-      <section className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-6 py-8 lg:px-10 lg:py-10">
-        <header className="flex flex-col gap-4 rounded-[2rem] border border-white/10 bg-white/6 p-8 shadow-[0_30px_100px_rgba(3,13,87,0.35)] backdrop-blur">
-          <p className="text-sm font-medium uppercase tracking-[0.28em] text-[var(--app-accent-1)]">
-            Footprint Mappa
-          </p>
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-3xl space-y-3">
-              <h1 className="text-4xl font-semibold tracking-tight text-white lg:text-6xl">
-                Serious architecture, lightweight implementation.
-              </h1>
-              <p className="max-w-2xl text-base leading-7 text-[var(--muted)] lg:text-lg">
-                Upload a PCF CSV, review a concise summary, and move into a
-                hydration-independent report preview built for future PDF export.
-              </p>
-            </div>
-            <div className="rounded-[1.5rem] border border-white/10 bg-white/8 px-5 py-4 text-sm text-[var(--muted)]">
-              <div>Runtime target: Node</div>
-              <div>Current scope: PCF foundation</div>
-              <div>OCF: placeholder types only</div>
-            </div>
-          </div>
-        </header>
+    <main className="app-shell relative min-h-screen overflow-hidden">
+      <div className="relative mx-auto w-full max-w-[86rem] px-6 pb-10 pt-5 sm:px-8 lg:px-12 lg:pb-12 lg:pt-4">
+        <div className="relative z-10 flex flex-col">
+          <MinimalHeader />
 
-        <div className="grid gap-8 xl:grid-cols-[1.1fr_0.9fr]">
-          <DashboardShell />
-          <UploadPanel />
+          <section className="mt-4 lg:mt-5">
+            <HomeHero />
+          </section>
+
+          <section className="mt-6 grid gap-4 lg:mt-7 xl:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)] xl:items-start">
+            <UploadPanel />
+            <div className="relative isolate">
+              <BackgroundEmissions />
+              <div className="relative z-10">
+                <ReportPreviewCard />
+              </div>
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
     </main>
   );
 }

@@ -14,6 +14,12 @@ Web application that transforms PCF CSV datasets into professional report previe
 - Report preview route under `reports/[jobId]`
 - Temporary filesystem job store under `.tmp/reports`
 - PDF route scaffold under `api/reports/pdf/[jobId]`
+- Relats used as the default demo client branding for report preview surfaces
+
+## Branding Direction
+- Footprint Mappa is the application brand
+- Report preview and PDF surfaces are intended to use client-specific branding
+- Relats is the current demo client, not the fixed identity of the product
 
 ## Project Structure
 - `src/app`: routes and server entrypoints

@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #041282;
-  --foreground: #f6f5ff;
-  --muted: rgba(246, 245, 255, 0.72);
-  --surface: rgba(255, 255, 255, 0.08);
-  --surface-strong: rgba(255, 255, 255, 0.14);
-  --border: rgba(255, 255, 255, 0.14);
-  --app-accent-1: #fdc2d8;
-  --app-accent-2: #fca65e;
-  --app-accent-3: #ff7983;
+  --background: #fdfcff;
+  --foreground: #201734;
+  --muted: #686175;
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface-strong: #ffffff;
+  --border: rgba(32, 23, 52, 0.08);
+  --app-accent-1: #f2dff7;
+  --app-accent-2: #ff6c4d;
+  --app-accent-3: #8662cc;
   --report-accent: #ff5710;
   --report-text: #1c1c1c;
   --report-bg: #ffffff;
@@ -28,14 +28,12 @@
 }
 
 html {
-  background:
-    radial-gradient(circle at top left, rgba(253, 194, 216, 0.18), transparent 28%),
-    radial-gradient(circle at top right, rgba(252, 166, 94, 0.22), transparent 32%),
-    linear-gradient(180deg, #0a1670 0%, #041282 58%, #030d57 100%);
+  background: #ffffff;
 }
 
 body {
-  background: var(--background);
+  min-height: 100vh;
+  background: #ffffff;
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
@@ -45,19 +43,121 @@ a {
 }
 
 ::selection {
-  background: rgba(252, 166, 94, 0.35);
+  background: rgba(255, 108, 77, 0.18);
 }
 
 .app-shell {
-  min-height: 100vh;
-  background:
-    linear-gradient(135deg, rgba(255, 121, 131, 0.08), transparent 35%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 25%);
+  background: linear-gradient(180deg, #ffffff 0%, #fefeff 100%);
+}
+
+.emission-field {
+  overflow: visible;
+  animation: emissionFieldFloat 12s cubic-bezier(0.45, 0, 0.55, 1) infinite
+    alternate;
+}
+
+.emission-origin-shell {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 62%,
+    rgba(0, 0, 0, 0.78) 75%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 62%,
+    rgba(0, 0, 0, 0.78) 75%,
+    transparent 100%
+  );
+}
+
+.emission-wave {
+  animation: emissionWaveGlow 9s ease-in-out infinite alternate;
+}
+
+.emission-wave--coral {
+  animation-duration: 9s;
+}
+
+.emission-wave--pink {
+  animation-duration: 12s;
+  animation-direction: alternate-reverse;
+}
+
+.emission-wave--violet {
+  animation-duration: 15s;
+  animation-direction: alternate-reverse;
+}
+
+.emission-wave--deep {
+  animation-duration: 18s;
+}
+
+.emission-upper-details {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-linecap: round;
+  stroke-width: 1.15;
+  animation: emissionDetailsDrift 9s cubic-bezier(0.45, 0, 0.55, 1) infinite
+    alternate;
+}
+
+.emission-upper-details circle {
+  fill: rgba(255, 255, 255, 0.62);
+  stroke: none;
+}
+
+@keyframes emissionFieldFloat {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(8px, -10px, 0) rotate(-0.12deg);
+  }
+
+  100% {
+    transform: translate3d(18px, -17px, 0) rotate(0.16deg);
+  }
+}
+
+@keyframes emissionWaveGlow {
+  from {
+    opacity: 0.78;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes emissionDetailsDrift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(24px, -14px, 0);
+  }
+}
+
+.overflow-wrap-anywhere {
+  overflow-wrap: anywhere;
 }
 
 .report-page {
   background: var(--report-bg);
   color: var(--report-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emission-field,
+  .emission-wave,
+  .emission-upper-details {
+    animation: none !important;
+  }
 }
 
 @media print {

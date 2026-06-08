@@ -4,7 +4,7 @@ export function getReportPreviewModel(
   job: PcfReportJobRecord,
 ): ReportPreviewModel {
   return {
-    generatedLabel: new Intl.DateTimeFormat("en-GB", {
+    generatedLabel: new Intl.DateTimeFormat("es-ES", {
       dateStyle: "medium",
       timeStyle: "short",
     }).format(new Date(job.createdAt)),

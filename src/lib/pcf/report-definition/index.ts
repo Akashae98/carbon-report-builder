@@ -4,6 +4,7 @@ import type {
   PcfSchemaValidationResult,
   ReportDefinition,
 } from "@/types";
+import { formatLifecycleStage } from "@/lib/formatting";
 
 interface BuildPcfReportDefinitionOptions {
   jobId: string;
@@ -20,40 +21,40 @@ export function buildPcfReportDefinition({
 }: BuildPcfReportDefinitionOptions): ReportDefinition {
   const methodologyDescription =
     schemaValidation.warnings[0] ??
-    "Uploaded CSV values are treated as already calculated emissions and summarized without recalculating footprint methodology.";
+    "Los valores del CSV se interpretan como emisiones ya calculadas y se resumen sin recalcular la metodología de la huella.";
 
   return {
     reportId: jobId,
     reportType: "pcf",
-    title: "Product Carbon Footprint Report",
+    title: "Informe de huella de carbono de producto",
     summary:
-      `Generated from uploaded PCF data in ${normalizedDataset.sourceFileName} for ${derivedMetrics.totalProducts} products.`,
+      `Generado a partir de los datos PCF de ${normalizedDataset.sourceFileName} para ${derivedMetrics.totalProducts} productos.`,
     theme: "relats",
     sections: [
       {
         id: "overview",
         kind: "hero",
-        title: "Results overview",
-        description: `${derivedMetrics.totalProducts} products are available in the uploaded dataset sourced from ${normalizedDataset.sourceFileName}.`,
+        title: "Resumen de resultados",
+        description: `El conjunto de datos de ${normalizedDataset.sourceFileName} incluye ${derivedMetrics.totalProducts} productos.`,
       },
       {
         id: "methodology",
         kind: "methodology",
-        title: "Methodological approach",
+        title: "Enfoque metodológico",
         description: methodologyDescription,
       },
       {
         id: "breakdown",
         kind: "chart",
-        title: "Lifecycle breakdown",
-        description: `${derivedMetrics.topContributorStage} is currently the highest-impact stage in the sample preview.`,
+        title: "Desglose del ciclo de vida",
+        description: `${formatLifecycleStage(derivedMetrics.topContributorStage)} es la etapa con mayor impacto en la vista previa actual.`,
       },
       {
         id: "detailed-analysis",
         kind: "table",
-        title: "Detailed product analysis",
+        title: "Análisis detallado por producto",
         description:
-          "The report definition keeps a dedicated place for product-level analysis based on the uploaded aggregate lifecycle totals.",
+          "El informe reserva un apartado para analizar cada producto a partir de los totales agregados de su ciclo de vida.",
       },
     ],
   };

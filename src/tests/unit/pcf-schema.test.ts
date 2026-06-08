@@ -67,7 +67,7 @@ describe("PCF schema validation", () => {
     expect(result.validation.isValid).toBe(false);
     expect(result.validation.validRowCount).toBe(0);
     expect(result.validation.errors).toContain(
-      "The CSV does not contain any valid PCF data rows.",
+      "El CSV no contiene ninguna fila de datos PCF válida.",
     );
   });
 });

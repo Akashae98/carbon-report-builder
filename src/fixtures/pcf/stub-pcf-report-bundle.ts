@@ -23,7 +23,7 @@ const stubProducts: PcfNormalizedProduct[] = [
     },
   },
   {
-    productName: "Caja carton corrugado",
+    productName: "Caja de cartón corrugado",
     functionalUnit: "1 unidad",
     totalEmissions: 102.775,
     lifecycleTotals: {
@@ -36,7 +36,7 @@ const stubProducts: PcfNormalizedProduct[] = [
     },
   },
   {
-    productName: "Camiseta algodon",
+    productName: "Camiseta de algodón",
     functionalUnit: "1 unidad",
     totalEmissions: 108.876,
     lifecycleTotals: {
@@ -65,7 +65,7 @@ export function buildStubPcfSchemaValidation(
     isValid: true,
     errors: [],
     warnings: [
-      "Phase 1 uses fixture-backed validation output. Real CSV header and row validation starts in Phase 2.",
+      "La fase 1 usa resultados de validación de prueba. La validación real de columnas y filas del CSV comienza en la fase 2.",
     ],
   };
 }
