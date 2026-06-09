@@ -148,8 +148,15 @@ a {
 }
 
 .report-page {
-  background: var(--report-bg);
+  background:
+    linear-gradient(180deg, #f4efeb 0%, #ffffff 22%),
+    var(--report-bg);
   color: var(--report-text);
+}
+
+.report-sheet {
+  break-inside: avoid;
+  page-break-inside: avoid;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -165,6 +172,17 @@ a {
   body {
     background: var(--report-bg);
     color: var(--report-text);
+  }
+
+  .report-page {
+    background: var(--report-bg);
+  }
+
+  .report-sheet {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    break-after: page;
+    page-break-after: always;
   }
 
   .print-hidden {

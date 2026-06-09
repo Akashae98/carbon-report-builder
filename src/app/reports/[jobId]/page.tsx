@@ -23,7 +23,7 @@ export default async function ReportPage({ params }: ReportPageProps) {
 
   return (
     <main className="report-page min-h-screen">
-      <ReportShell job={job} preview={preview} />
+      <ReportShell reportDefinition={job.reportDefinition} preview={preview} />
     </main>
   );
 }

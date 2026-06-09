@@ -19,9 +19,7 @@ export function buildPcfReportDefinition({
   normalizedDataset,
   derivedMetrics,
 }: BuildPcfReportDefinitionOptions): ReportDefinition {
-  const methodologyDescription =
-    schemaValidation.warnings[0] ??
-    "Los valores del CSV se interpretan como emisiones ya calculadas y se resumen sin recalcular la metodología de la huella.";
+  void schemaValidation;
 
   return {
     reportId: jobId,
@@ -32,29 +30,59 @@ export function buildPcfReportDefinition({
     theme: "relats",
     sections: [
       {
-        id: "overview",
+        id: "cover",
         kind: "hero",
-        title: "Resumen de resultados",
-        description: `El conjunto de datos de ${normalizedDataset.sourceFileName} incluye ${derivedMetrics.totalProducts} productos.`,
+        title: "Portada",
+        description: "Presentación ejecutiva del informe para cliente.",
+      },
+      {
+        id: "introduction",
+        kind: "narrative",
+        title: "Introducción",
+        description:
+          `El conjunto de datos ${normalizedDataset.sourceFileName} incluye ${derivedMetrics.totalProducts} productos evaluados.`,
       },
       {
         id: "methodology",
         kind: "methodology",
-        title: "Enfoque metodológico",
-        description: methodologyDescription,
+        title: "Metodología",
+        description:
+          "El análisis se estructura sobre etapas agregadas del ciclo de vida declaradas en el CSV fuente.",
       },
       {
-        id: "breakdown",
+        id: "results-overview",
+        kind: "kpis",
+        title: "Resumen de resultados",
+        description:
+          "Indicadores ejecutivos con volumen analizado, emisiones agregadas y etapa dominante.",
+      },
+      {
+        id: "lifecycle-breakdown",
         kind: "chart",
         title: "Desglose del ciclo de vida",
-        description: `${formatLifecycleStage(derivedMetrics.topContributorStage)} es la etapa con mayor impacto en la vista previa actual.`,
+        description:
+          `${formatLifecycleStage(derivedMetrics.topContributorStage)} concentra la mayor aportación al resultado total.`,
       },
       {
-        id: "detailed-analysis",
+        id: "top-product-ranking",
         kind: "table",
-        title: "Análisis detallado por producto",
+        title: "Clasificación de productos",
         description:
-          "El informe reserva un apartado para analizar cada producto a partir de los totales agregados de su ciclo de vida.",
+          "Comparativa de los productos con mayor nivel de emisiones agregadas.",
+      },
+      {
+        id: "recommendations",
+        kind: "narrative",
+        title: "Recomendaciones",
+        description:
+          "Líneas de acción priorizadas a partir de la distribución de impactos observada.",
+      },
+      {
+        id: "conclusions",
+        kind: "narrative",
+        title: "Conclusiones",
+        description:
+          "Cierre ejecutivo con los principales hallazgos del conjunto analizado.",
       },
     ],
   };

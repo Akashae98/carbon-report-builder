@@ -24,10 +24,13 @@ function createJob(jobId: string): PcfReportJobRecord {
     schemaValidation: {
       reportType: "pcf",
       sourceFileName: "sample.csv",
-      requiredHeaders: ["product"],
-      receivedHeaders: ["product"],
-      rowCount: 0,
+      requiredHeaders: ["product", "functional_unit", "total_emissions"],
+      receivedHeaders: ["product", "functional_unit", "total_emissions"],
+      missingHeaders: [],
+      parsedRowCount: 1,
+      validRowCount: 1,
       isValid: true,
+      invalidRows: [],
       errors: [],
       warnings: [],
     },
@@ -37,24 +40,44 @@ function createJob(jobId: string): PcfReportJobRecord {
       functionalUnitLabel: "kgCO2e",
       sourceRowCount: 1,
       lifecycleStages: ["Materials"],
-      products: [],
+      products: [
+        {
+          productName: "Sample product",
+          functionalUnit: "1 unit",
+          totalEmissions: 10,
+          lifecycleTotals: {
+            Materials: 10,
+          },
+        },
+      ],
     },
     derivedMetrics: {
-      totalProducts: 0,
-      totalEmissions: 0,
-      averageEmissions: 0,
-      stageTotals: { Materials: 0 },
+      totalProducts: 1,
+      totalEmissions: 10,
+      averageEmissions: 10,
+      stageTotals: { Materials: 10 },
       topContributorStage: "Materials",
-      topContributorShare: 0,
-      topProducts: [],
+      topContributorShare: 1,
+      topProducts: [
+        {
+          productName: "Sample product",
+          totalEmissions: 10,
+        },
+      ],
     },
     reportDefinition: {
       reportId: jobId,
       reportType: "pcf",
-      title: "Stub",
-      summary: "Stub",
+      title: "Informe de huella de carbono de producto",
+      summary: "Resumen de muestra",
       theme: "relats",
-      sections: [],
+      sections: [
+        {
+          id: "cover",
+          kind: "hero",
+          title: "Portada",
+        },
+      ],
     },
   };
 }

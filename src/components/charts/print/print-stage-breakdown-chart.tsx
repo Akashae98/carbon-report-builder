@@ -1,7 +1,7 @@
-import { formatLifecycleStage, formatPercent } from "@/lib/formatting";
+import type { ReportStageBreakdownItem } from "@/types";
 
 interface PrintStageBreakdownChartProps {
-  stageTotals: Record<string, number>;
+  items: ReportStageBreakdownItem[];
 }
 
 function renderEmptyState(width: number, height: number, label: string) {
@@ -23,18 +23,15 @@ function renderEmptyState(width: number, height: number, label: string) {
 }
 
 export function PrintStageBreakdownChart({
-  stageTotals,
+  items,
 }: PrintStageBreakdownChartProps) {
-  const entries = Object.entries(stageTotals);
-  const maxValue = Math.max(...entries.map(([, value]) => value), 1);
-  const total = entries.reduce((sum, [, value]) => sum + value, 0);
-  const mobileHeight = Math.max(entries.length * 64 + 48, 190);
+  const maxValue = Math.max(...items.map(({ total }) => total), 1);
+  const mobileHeight = Math.max(items.length * 64 + 48, 190);
 
   return (
     <figure aria-labelledby="stage-breakdown-caption">
       <figcaption id="stage-breakdown-caption" className="sr-only">
-        Distribución de emisiones por etapa del ciclo de vida en la vista previa
-        del informe.
+        Distribucion de emisiones por etapa del ciclo de vida.
       </figcaption>
 
       <svg
@@ -43,7 +40,7 @@ export function PrintStageBreakdownChart({
         aria-hidden="true"
         focusable="false"
       >
-        {entries.length === 0
+        {items.length === 0
           ? renderEmptyState(320, mobileHeight, "No hay datos disponibles.")
           : (
               <>
@@ -55,13 +52,12 @@ export function PrintStageBreakdownChart({
                   rx="24"
                   fill="#ffffff"
                 />
-                {entries.map(([label, value], index) => {
+                {items.map((item, index) => {
                   const y = 28 + index * 64;
-                  const width = (value / maxValue) * 236;
-                  const percentage = total === 0 ? 0 : value / total;
+                  const width = (item.total / maxValue) * 236;
 
                   return (
-                    <g key={label}>
+                    <g key={item.stage}>
                       <text
                         x="24"
                         y={y}
@@ -69,7 +65,7 @@ export function PrintStageBreakdownChart({
                         fontFamily="Arial, Helvetica, sans-serif"
                         fill="#4d4d4d"
                       >
-                        {formatLifecycleStage(label)}
+                        {item.label}
                       </text>
                       <text
                         x="296"
@@ -79,7 +75,7 @@ export function PrintStageBreakdownChart({
                         fontFamily="Arial, Helvetica, sans-serif"
                         fill="#1c1c1c"
                       >
-                        {formatPercent(percentage)}
+                        {item.shareLabel}
                       </text>
                       <rect
                         x="24"
@@ -111,7 +107,7 @@ export function PrintStageBreakdownChart({
         aria-hidden="true"
         focusable="false"
       >
-        {entries.length === 0
+        {items.length === 0
           ? renderEmptyState(640, 340, "No hay datos disponibles.")
           : (
               <>
@@ -133,13 +129,12 @@ export function PrintStageBreakdownChart({
                   strokeWidth="2"
                 />
 
-                {entries.map(([label, value], index) => {
+                {items.map((item, index) => {
                   const y = 72 + index * 42;
-                  const width = (value / maxValue) * 420;
-                  const percentage = total === 0 ? 0 : value / total;
+                  const width = (item.total / maxValue) * 420;
 
                   return (
-                    <g key={label}>
+                    <g key={item.stage}>
                       <text
                         x="108"
                         y={y + 14}
@@ -148,7 +143,7 @@ export function PrintStageBreakdownChart({
                         fontFamily="Arial, Helvetica, sans-serif"
                         fill="#4d4d4d"
                       >
-                        {formatLifecycleStage(label)}
+                        {item.label}
                       </text>
                       <rect
                         x="132"
@@ -166,7 +161,7 @@ export function PrintStageBreakdownChart({
                         fontFamily="Arial, Helvetica, sans-serif"
                         fill="#1c1c1c"
                       >
-                        {formatPercent(percentage)}
+                        {item.shareLabel}
                       </text>
                     </g>
                   );

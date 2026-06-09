@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { renderToStaticMarkup } from "react-dom/server";
 
 import { afterEach, describe, expect, it } from "vitest";
 
@@ -89,8 +90,31 @@ describe("route scaffolding", () => {
     expect(response.status).toBe(404);
   });
 
-  it("keeps the preview page export callable", () => {
-    expect(typeof reportPage).toBe("function");
+  it("renders the saved PCF report preview from persisted job data", async () => {
+    const formData = new FormData();
+    formData.set(
+      "file",
+      new File([readSamplePcfCsv()], "sample_pcf.csv", { type: "text/csv" }),
+    );
+
+    const uploadRequest = new Request("http://localhost/api/reports/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const uploadResponse = await postUploadRoute(uploadRequest);
+    const payload = (await uploadResponse.json()) as { jobId: string };
+    createdJobIds.push(payload.jobId);
+
+    const element = await reportPage({
+      params: Promise.resolve({ jobId: payload.jobId }),
+    });
+    const markup = renderToStaticMarkup(element);
+
+    expect(markup).toContain("Informe de huella de carbono de producto");
+    expect(markup).toContain("Contexto del análisis");
+    expect(markup).toContain("Productos con mayor huella agregada");
+    expect(markup).toContain("Elaborado con Footprint Mappa");
   });
 
   it("keeps the runtime upload path free from fixture imports", () => {

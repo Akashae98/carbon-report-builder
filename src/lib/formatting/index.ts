@@ -25,6 +25,12 @@ export function formatPercent(value: number) {
   return percentFormatter.format(value);
 }
 
+export function formatNumber(value: number, maximumFractionDigits = 2) {
+  return new Intl.NumberFormat("es-ES", {
+    maximumFractionDigits,
+  }).format(value);
+}
+
 export function formatLifecycleStage(stage: string) {
   return lifecycleStageLabels[stage] ?? stage;
 }
