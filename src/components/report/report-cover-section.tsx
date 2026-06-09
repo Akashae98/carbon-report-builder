@@ -8,10 +8,11 @@ interface ReportCoverSectionProps {
 
 export function ReportCoverSection({ preview }: ReportCoverSectionProps) {
   return (
-    <section className="report-sheet overflow-hidden rounded-[1.5rem] border border-black/8 bg-white shadow-[0_20px_60px_rgba(28,28,28,0.06)]">
-      <div className="grid gap-0 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="px-6 py-8 sm:px-10 sm:py-12">
-          <div className="flex min-h-[28rem] flex-col justify-between">
+    <section className="report-cover-sheet report-sheet overflow-hidden rounded-[1.5rem] border border-black/8 bg-white shadow-[0_20px_60px_rgba(28,28,28,0.06)]">
+      <div className="report-cover-accent" aria-hidden="true" />
+      <div className="report-cover-layout grid gap-0 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="report-cover-primary px-6 py-8 sm:px-10 sm:py-12">
+          <div className="report-cover-primary-stack flex min-h-[28rem] flex-col justify-between">
             <div>
               <Image
                 src={preview.branding.logoSrc}
@@ -20,7 +21,7 @@ export function ReportCoverSection({ preview }: ReportCoverSectionProps) {
                 height={48}
                 className="h-10 w-auto object-contain"
               />
-              <p className="mt-12 text-[0.78rem] font-semibold uppercase tracking-[0.26em] text-[var(--report-accent)]">
+              <p className="mt-12 text-[0.78rem] font-semibold uppercase tracking-[0.06em] text-[var(--report-accent)]">
                 Informe ejecutivo
               </p>
               <h1 className="mt-4 max-w-[14ch] text-[3rem] font-semibold leading-[0.95] text-[var(--report-text)] sm:text-[4.25rem]">
@@ -33,7 +34,7 @@ export function ReportCoverSection({ preview }: ReportCoverSectionProps) {
 
             <dl className="mt-10 grid gap-5 border-t border-black/8 pt-6 text-sm text-black/70 sm:grid-cols-2">
               <div>
-                <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-black/45">
+                <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/45">
                   Cliente
                 </dt>
                 <dd className="mt-2 text-base font-medium text-[var(--report-text)]">
@@ -41,7 +42,7 @@ export function ReportCoverSection({ preview }: ReportCoverSectionProps) {
                 </dd>
               </div>
               <div>
-                <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-black/45">
+                <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/45">
                   Fecha de emisión
                 </dt>
                 <dd className="mt-2 text-base font-medium text-[var(--report-text)]">
@@ -49,7 +50,7 @@ export function ReportCoverSection({ preview }: ReportCoverSectionProps) {
                 </dd>
               </div>
               <div className="sm:col-span-2">
-                <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-black/45">
+                <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/45">
                   Archivo analizado
                 </dt>
                 <dd className="mt-2 overflow-wrap-anywhere text-base font-medium text-[var(--report-text)]">
@@ -60,14 +61,14 @@ export function ReportCoverSection({ preview }: ReportCoverSectionProps) {
           </div>
         </div>
 
-        <div className="flex flex-col justify-between bg-[var(--report-panel)] px-6 py-8 sm:px-10 sm:py-12">
+        <div className="report-cover-summary flex flex-col justify-between bg-[var(--report-panel)] px-6 py-8 sm:px-10 sm:py-12">
           <div>
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-black/50">
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/50">
               Resumen ejecutivo
             </p>
             <div className="mt-6 space-y-6">
               <article>
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-black/50">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/50">
                   Productos analizados
                 </p>
                 <p className="mt-2 text-[2.4rem] font-semibold leading-none text-[var(--report-text)]">
@@ -75,7 +76,7 @@ export function ReportCoverSection({ preview }: ReportCoverSectionProps) {
                 </p>
               </article>
               <article>
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-black/50">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/50">
                   Huella de carbono total
                 </p>
                 <p className="mt-2 text-[2rem] font-semibold leading-tight text-[var(--report-text)]">
@@ -83,7 +84,7 @@ export function ReportCoverSection({ preview }: ReportCoverSectionProps) {
                 </p>
               </article>
               <article>
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-black/50">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/50">
                   Principal fuente de emisiones
                 </p>
                 <p className="mt-2 text-[1.6rem] font-semibold leading-tight text-[var(--report-text)]">
@@ -96,7 +97,7 @@ export function ReportCoverSection({ preview }: ReportCoverSectionProps) {
             </div>
           </div>
 
-          <p className="mt-8 text-xs font-medium uppercase tracking-[0.18em] text-black/55">
+          <p className="mt-8 text-xs font-medium uppercase tracking-[0.04em] text-black/55">
             {preview.document.generatedBy}
           </p>
         </div>

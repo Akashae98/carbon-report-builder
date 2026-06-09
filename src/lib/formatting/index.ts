@@ -17,6 +17,28 @@ const lifecycleStageLabels: Record<string, string> = {
   "End of life": "Fin de vida",
 };
 
+const mojibakeDisplayReplacements: Record<string, string> = {
+  "Ã¡": "á",
+  "Ã©": "é",
+  "Ã­": "í",
+  "Ã³": "ó",
+  "Ãº": "ú",
+  "Ã±": "ñ",
+  "Ã": "Á",
+  "Ã‰": "É",
+  "Ã": "Í",
+  "Ã“": "Ó",
+  "Ãš": "Ú",
+  "Ã‘": "Ñ",
+};
+
+const spanishDisplayWordReplacements: Record<string, string> = {
+  algodon: "algodón",
+  carton: "cartón",
+  liquido: "líquido",
+  plastico: "plástico",
+};
+
 export function formatCompactNumber(value: number) {
   return compactFormatter.format(value);
 }
@@ -32,5 +54,22 @@ export function formatNumber(value: number, maximumFractionDigits = 2) {
 }
 
 export function formatLifecycleStage(stage: string) {
-  return lifecycleStageLabels[stage] ?? stage;
+  return normalizeSpanishDisplayText(lifecycleStageLabels[stage] ?? stage);
+}
+
+export function formatEmissionsLabel(value: number) {
+  return `${formatNumber(value)} kgCO₂e`;
+}
+
+export function normalizeSpanishDisplayText(value: string) {
+  const normalizedEncoding = Object.entries(mojibakeDisplayReplacements).reduce(
+    (normalized, [search, replacement]) => normalized.replaceAll(search, replacement),
+    value.replaceAll("CO2e", "CO₂e"),
+  );
+
+  return Object.entries(spanishDisplayWordReplacements).reduce(
+    (normalized, [search, replacement]) =>
+      normalized.replace(new RegExp(`\\b${search}\\b`, "gi"), replacement),
+    normalizedEncoding,
+  );
 }

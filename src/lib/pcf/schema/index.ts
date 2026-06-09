@@ -62,6 +62,13 @@ function parseNumericValue(input: string) {
     return { ok: false as const, message: "El valor debe ser un número válido." };
   }
 
+  if (parsed < 0) {
+    return {
+      ok: false as const,
+      message: "El valor no puede ser negativo.",
+    };
+  }
+
   return { ok: true as const, value: parsed };
 }
 

@@ -18,8 +18,8 @@ export function ReportLifecycleBreakdownSection({
       title="Distribución por etapa del ciclo de vida"
       description={preview.lifecycle.narrative}
     >
-      <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
-        <div className="rounded-[1.2rem] border border-black/8 bg-[var(--report-panel)] p-4 sm:p-5">
+      <div className="report-lifecycle-grid grid gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
+        <div className="report-chart-panel rounded-[1.2rem] border border-black/8 bg-[var(--report-panel)] p-4 sm:p-5">
           <PrintStageBreakdownChart items={preview.lifecycle.items} />
         </div>
 

@@ -20,9 +20,9 @@ export function ReportSection({
       id={id}
       className="report-sheet rounded-[1.5rem] border border-black/8 bg-white px-6 py-8 shadow-[0_20px_60px_rgba(28,28,28,0.06)] sm:px-10 sm:py-10"
     >
-      <header className="max-w-3xl">
+      <header className="report-section-header max-w-3xl">
         {eyebrow ? (
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--report-accent)]">
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.06em] text-[var(--report-accent)]">
             {eyebrow}
           </p>
         ) : null}
@@ -34,7 +34,7 @@ export function ReportSection({
         ) : null}
       </header>
 
-      <div className="mt-8">{children}</div>
+      <div className="report-section-body mt-8">{children}</div>
     </section>
   );
 }

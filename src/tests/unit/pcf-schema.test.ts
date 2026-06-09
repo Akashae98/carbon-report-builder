@@ -58,6 +58,26 @@ describe("PCF schema validation", () => {
     );
   });
 
+  it("rejects negative numeric values", () => {
+    const csv = [
+      "product,functional_unit,total_emissions,total_materials,total_manufacturing,total_transport,total_distribution,total_use,total_end_of_life",
+      "Bottle,1 unit,-1,1,2,3,4,5,6",
+    ].join("\n");
+
+    const result = parseAndValidatePcfCsv(csv, "negative-number.csv");
+
+    expect(result.validation.isValid).toBe(false);
+    expect(result.validation.invalidRows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          rowNumber: 2,
+          field: "total_emissions",
+          message: "El valor no puede ser negativo.",
+        }),
+      ]),
+    );
+  });
+
   it("rejects CSVs without valid data rows", () => {
     const csv =
       "product,functional_unit,total_emissions,total_materials,total_manufacturing,total_transport,total_distribution,total_use,total_end_of_life\n";

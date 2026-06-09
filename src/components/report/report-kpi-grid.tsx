@@ -16,7 +16,7 @@ export function ReportKpiGrid({ items }: ReportKpiGridProps) {
           key={item.label}
           className="rounded-[1.2rem] border border-black/8 bg-[var(--report-panel)] px-5 py-5"
         >
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-black/55">
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-black/55">
             {item.label}
           </p>
           <p className="mt-3 text-[2rem] font-semibold leading-none text-[var(--report-text)]">

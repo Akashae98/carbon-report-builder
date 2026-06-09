@@ -9,6 +9,8 @@ import type { PcfReportJobRecord, ReportUploadMetadata } from "@/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+export const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024;
+
 export async function POST(request: Request) {
   const formData = await request.formData();
   const file = formData.get("file");
@@ -26,6 +28,16 @@ export async function POST(request: Request) {
     size: file.size,
     receivedAt: new Date().toISOString(),
   };
+
+  if (file.size > MAX_UPLOAD_SIZE_BYTES) {
+    return Response.json(
+      {
+        error: "El CSV supera el tamaño máximo permitido.",
+        details: ["El tamaño máximo permitido para esta demo es de 5 MB."],
+      },
+      { status: 400 },
+    );
+  }
 
   const csvText = await file.text();
   const { rows, validation } = parseAndValidatePcfCsv(csvText, upload.fileName);

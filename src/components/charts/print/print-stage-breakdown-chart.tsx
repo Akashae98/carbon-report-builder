@@ -31,7 +31,7 @@ export function PrintStageBreakdownChart({
   return (
     <figure aria-labelledby="stage-breakdown-caption">
       <figcaption id="stage-breakdown-caption" className="sr-only">
-        Distribucion de emisiones por etapa del ciclo de vida.
+        Distribución de emisiones por etapa del ciclo de vida.
       </figcaption>
 
       <svg

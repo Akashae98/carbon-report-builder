@@ -1,4 +1,4 @@
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -131,5 +131,15 @@ describe("FilesystemReportJobStore", () => {
     const store = new FilesystemReportJobStore(rootDir);
 
     await expect(store.read("missing-job")).resolves.toBeNull();
+  });
+
+  it("returns null when a persisted job file contains invalid JSON", async () => {
+    const rootDir = await mkdtemp(join(tmpdir(), "fm-store-"));
+    tempRoots.push(rootDir);
+
+    const store = new FilesystemReportJobStore(rootDir);
+    await writeFile(join(rootDir, "corrupted-job.json"), "{", "utf8");
+
+    await expect(store.read("corrupted-job")).resolves.toBeNull();
   });
 });

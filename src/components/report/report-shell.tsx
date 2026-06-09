@@ -27,7 +27,7 @@ const reportSectionRenderers = {
 
 export function ReportShell({ reportDefinition, preview }: ReportShellProps) {
   return (
-    <article className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 md:px-10">
+    <article className="report-shell mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 md:px-10">
       {reportDefinition.sections.map((section) => {
         const SectionComponent =
           reportSectionRenderers[

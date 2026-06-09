@@ -62,27 +62,34 @@ export function UploadPanel() {
     formData.append("file", selectedFile);
 
     startTransition(async () => {
-      const response = await fetch("/api/reports/upload", {
-        method: "POST",
-        body: formData,
-      });
+      try {
+        const response = await fetch("/api/reports/upload", {
+          method: "POST",
+          body: formData,
+        });
 
-      const payload = (await response.json()) as
-        | { error: string; details?: string[] }
-        | { previewPath: string };
+        const payload = (await response.json().catch(() => null)) as
+          | { error: string; details?: string[] }
+          | { previewPath: string }
+          | null;
 
-      if (!response.ok || !("previewPath" in payload)) {
-        setErrors(
-          "error" in payload
-            ? payload.details && payload.details.length > 0
-              ? payload.details
-              : [payload.error]
-            : ["No se pudo generar la vista previa del informe."],
-        );
-        return;
+        if (!response.ok || !payload || !("previewPath" in payload)) {
+          setErrors(
+            payload && "error" in payload
+              ? payload.details && payload.details.length > 0
+                ? payload.details
+                : [payload.error]
+              : ["No se pudo generar la vista previa del informe."],
+          );
+          return;
+        }
+
+        window.location.assign(payload.previewPath);
+      } catch {
+        setErrors([
+          "No se pudo conectar con el servidor. Revisa la conexión e inténtalo de nuevo.",
+        ]);
       }
-
-      window.location.assign(payload.previewPath);
     });
   }
 

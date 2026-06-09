@@ -17,14 +17,14 @@ export function ReportDataTable<TItem>({
   items,
 }: ReportDataTableProps<TItem>) {
   return (
-    <div className="overflow-hidden rounded-[1.1rem] border border-black/8">
+    <div className="report-table-wrapper overflow-hidden rounded-[1.1rem] border border-black/8">
       <table className="w-full border-collapse bg-white text-sm">
         <thead>
           <tr className="bg-[var(--report-panel)] text-left">
             {columns.map((column) => (
               <th
                 key={column.key}
-                className={`px-4 py-3 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-black/55 ${
+                className={`px-4 py-3 text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-black/55 ${
                   column.align === "right" ? "text-right" : "text-left"
                 }`}
               >
