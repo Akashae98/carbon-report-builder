@@ -1,4 +1,4 @@
-import puppeteer, { type Page } from "puppeteer";
+import type { BrowserAdapter, BrowserPageAdapter } from "@/lib/reporting/pdf/types";
 
 export const PDF_RUNTIME_TARGET = "nodejs";
 
@@ -6,6 +6,8 @@ interface GenerateReportPdfOptions {
   jobId: string;
   requestOrigin?: string;
 }
+
+export type PdfBrowserDriver = "local" | "vercel";
 
 export function resolveReportBaseUrl(requestOrigin?: string) {
   return (
@@ -16,8 +18,26 @@ export function resolveReportBaseUrl(requestOrigin?: string) {
   ).replace(/\/$/, "");
 }
 
+export function resolvePdfBrowserDriver(
+  value: string | undefined = process.env.PDF_BROWSER_DRIVER,
+): PdfBrowserDriver {
+  return value === "vercel" ? "vercel" : "local";
+}
+
 export function buildReportPdfFileName(jobId: string) {
   return `relats-pcf-report-${jobId}.pdf`;
+}
+
+export async function createPdfBrowser(
+  driver: PdfBrowserDriver = resolvePdfBrowserDriver(),
+): Promise<BrowserAdapter> {
+  if (driver === "vercel") {
+    const { launchVercelPdfBrowser } = await import("@/lib/reporting/pdf/vercel-browser");
+    return launchVercelPdfBrowser();
+  }
+
+  const { launchLocalPdfBrowser } = await import("@/lib/reporting/pdf/local-browser");
+  return launchLocalPdfBrowser();
 }
 
 export async function generateReportPdf({
@@ -26,10 +46,7 @@ export async function generateReportPdf({
 }: GenerateReportPdfOptions) {
   const baseUrl = resolveReportBaseUrl(requestOrigin);
   const reportUrl = new URL(`/reports/${encodeURIComponent(jobId)}`, baseUrl);
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
+  const browser = await createPdfBrowser();
 
   try {
     const page = await browser.newPage();
@@ -50,7 +67,7 @@ export async function generateReportPdf({
   }
 }
 
-async function waitForReportAssets(page: Page) {
+async function waitForReportAssets(page: BrowserPageAdapter) {
   await page.evaluate(async () => {
     await document.fonts.ready;
 

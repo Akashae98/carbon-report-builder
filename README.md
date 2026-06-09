@@ -37,3 +37,11 @@ npm run dev
 npm run lint
 npm run test
 npm run build
+
+## Hosted MVP Environment
+- `REPORT_JOB_STORE_DRIVER=filesystem|xano`
+- `PDF_BROWSER_DRIVER=local|vercel`
+- `APP_URL` and `NEXT_PUBLIC_APP_URL` for absolute report/PDF URLs
+- `XANO_REPORTS_ENDPOINT` for hosted job persistence
+- `XANO_API_KEY` when the Xano endpoint is protected
+- `CHROMIUM_EXECUTABLE_PATH` only when the serverless Chromium package requires an explicit binary path
