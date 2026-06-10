@@ -17,7 +17,7 @@ Pay attention to:
 
 # Project Context
 
-This project generates professional carbon footprint reports from CSV datasets.
+This project is Carbon Report Builder. It generates professional carbon footprint reports from CSV datasets.
 
 Important:
 - Do NOT calculate carbon footprints.
@@ -25,8 +25,9 @@ Important:
 - Focus on data processing, visualization and report generation.
 
 Branding:
-- Application: Footprint Mappa
-- PDF Reports: Relats
+- Repository/project: Carbon Report Builder
+- Application/provider brand: Footprint Mappa
+- PDF Reports: client-branded presets, with Relats as the default demo brand
 
 Architecture goal:
 CSV -> Normalize -> Metrics -> Report Definition -> Renderer -> PDF
