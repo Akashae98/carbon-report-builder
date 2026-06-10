@@ -10,6 +10,7 @@ vi.mock("@/lib/reporting/pdf", () => ({
   generateReportPdf: vi.fn(async () => new Uint8Array([37, 80, 68, 70])),
 }));
 
+import { DEFAULT_BRAND_ID } from "@/lib/branding";
 import { reportJobStore } from "@/lib/jobs/report-job-store";
 import { GET as getPdfRoute } from "@/app/api/reports/pdf/[jobId]/route";
 import { GET as getReportPdfRedirectRoute } from "@/app/reports/pdf/[jobId]/route";
@@ -25,6 +26,7 @@ const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024;
 function createIncompletePcfJob(jobId: string): ReportJobRecord {
   return {
     jobId,
+    brandId: DEFAULT_BRAND_ID,
     reportType: "pcf",
     status: "draft",
     createdAt: "2026-06-09T10:30:00.000Z",
@@ -90,6 +92,7 @@ describe("route scaffolding", () => {
 
     const saved = await reportJobStore.read(payload.jobId);
     expect(saved?.jobId).toBe(payload.jobId);
+    expect(saved?.brandId).toBe(DEFAULT_BRAND_ID);
     expect(saved?.reportType).toBe("pcf");
     expect(saved?.schemaValidation.isValid).toBe(true);
     expect(saved?.derivedMetrics.totalProducts).toBe(6);

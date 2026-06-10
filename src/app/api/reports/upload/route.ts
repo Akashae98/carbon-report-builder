@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 
+import { DEFAULT_BRAND_ID } from "@/lib/branding";
 import { buildPcfReportDefinition } from "@/lib/pcf/report-definition";
 import { reportJobStore } from "@/lib/jobs/report-job-store";
 import { buildPcfDerivedMetrics, buildPcfNormalizedDataset } from "@/lib/pcf/normalization";
@@ -64,6 +65,7 @@ export async function POST(request: Request) {
 
   const job: PcfReportJobRecord = {
     jobId,
+    brandId: DEFAULT_BRAND_ID,
     reportType: "pcf",
     status: "draft",
     createdAt: new Date().toISOString(),

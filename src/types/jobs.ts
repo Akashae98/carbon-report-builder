@@ -1,4 +1,5 @@
 import type { PcfDerivedMetrics, PcfNormalizedDataset, PcfSchemaValidationResult } from "@/types/pcf";
+import type { BrandId } from "@/lib/branding";
 import type { ReportDefinition, ReportJobStatus } from "@/types/report";
 
 export interface ReportUploadMetadata {
@@ -10,6 +11,7 @@ export interface ReportUploadMetadata {
 
 export interface BaseReportJobRecord {
   jobId: string;
+  brandId: BrandId;
   status: ReportJobStatus;
   createdAt: string;
   upload: ReportUploadMetadata;

@@ -1,11 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { DEFAULT_BRAND_ID } from "@/lib/branding";
 import { buildXanoReportJobUrl, XanoReportJobStore } from "@/lib/jobs/xano-report-job-store";
 import type { PcfReportJobRecord } from "@/types";
 
 function createJob(jobId: string): PcfReportJobRecord {
   return {
     jobId,
+    brandId: DEFAULT_BRAND_ID,
     reportType: "pcf",
     status: "draft",
     createdAt: "2026-06-09T00:00:00.000Z",

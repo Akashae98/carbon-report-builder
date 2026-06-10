@@ -2,9 +2,6 @@ import Image from "next/image";
 
 import type { ReportPreviewModel } from "@/types";
 
-const FOOTPRINT_MAPPA_LOGO_PATH =
-  "/brands/footprint-mappa/footprint_mapa_logo.png";
-
 interface ReportCoverSectionProps {
   preview: ReportPreviewModel;
 }
@@ -84,8 +81,8 @@ export function ReportCoverSection({ preview }: ReportCoverSectionProps) {
             </p>
             <div className="mt-3 flex justify-start sm:justify-end">
               <Image
-                src={FOOTPRINT_MAPPA_LOGO_PATH}
-                alt="Footprint Mappa logo"
+                src={preview.branding.providerLogoSrc}
+                alt={`${preview.branding.providerName} logo`}
                 width={280}
                 height={74}
                 className="h-12 w-auto object-contain"

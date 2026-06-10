@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { DEFAULT_BRAND_ID, getBrandProfile } from "@/lib/branding";
 import { buildPcfDerivedMetrics, buildPcfNormalizedDataset } from "@/lib/pcf/normalization";
 import { buildPcfReportDefinition } from "@/lib/pcf/report-definition";
 import { getReportPreviewModel } from "@/lib/reporting/render";
@@ -21,6 +22,7 @@ function createJob(): PcfReportJobRecord {
 
   return {
     jobId: "preview-model-job",
+    brandId: DEFAULT_BRAND_ID,
     reportType: "pcf",
     status: "draft",
     createdAt: "2026-06-09T10:30:00.000Z",
@@ -50,6 +52,7 @@ function createJobFromCsv(csv: string): PcfReportJobRecord {
 
   return {
     jobId: "zero-preview-model-job",
+    brandId: DEFAULT_BRAND_ID,
     reportType: "pcf",
     status: "draft",
     createdAt: "2026-06-09T10:30:00.000Z",
@@ -69,8 +72,14 @@ function createJobFromCsv(csv: string): PcfReportJobRecord {
 describe("getReportPreviewModel", () => {
   it("builds a full report preview model from a saved PCF job", () => {
     const preview = getReportPreviewModel(createJob());
+    const brand = getBrandProfile(DEFAULT_BRAND_ID);
 
-    expect(preview.branding.logoSrc).toBe("/brands/relats/logo-relats.png");
+    expect(preview.branding.clientName).toBe(brand.name);
+    expect(preview.branding.logoSrc).toBe(brand.logoPath);
+    expect(preview.branding.providerName).toBe(brand.providerName);
+    expect(preview.branding.providerLogoSrc).toBe(brand.providerLogoPath);
+    expect(preview.branding.accentColor).toBe(brand.primaryColor);
+    expect(preview.document.subtitle).toBe(brand.reportSubtitle);
     expect(preview.lifecycle.items).toHaveLength(6);
     expect(preview.ranking.items.length).toBeLessThanOrEqual(5);
     expect(preview.ranking.items[0]?.rank).toBe(1);

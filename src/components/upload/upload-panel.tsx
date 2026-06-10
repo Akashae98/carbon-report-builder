@@ -118,6 +118,23 @@ export function UploadPanel() {
       </div>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
+        <div className="rounded-[0.95rem] bg-[#fff9f6] px-4 py-3 ring-1 ring-[#f2ded5] sm:rounded-[1.05rem]">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.06em] text-[#a86752]">
+                Configuraci&oacute;n del informe
+              </p>
+              <p className="mt-1 text-sm font-semibold text-[#30264b]">
+                Cliente: Relats
+              </p>
+            </div>
+            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[0.74rem] font-medium text-[#b75d42] ring-1 ring-[#f1d5c9]">
+              <span className="h-1.5 w-1.5 rounded-full bg-current" />
+              Branding corporativo aplicado
+            </span>
+          </div>
+        </div>
+
         <div
           className={`rounded-[0.95rem] px-4 py-4 text-center transition ring-1 sm:rounded-[1.2rem] sm:px-6 sm:py-7 ${
             isDragActive

@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 
 import { afterEach, describe, expect, it } from "vitest";
 
+import { DEFAULT_BRAND_ID } from "@/lib/branding";
 import { FilesystemReportJobStore } from "@/lib/jobs/report-job-store";
 import type { PcfReportJobRecord } from "@/types";
 
@@ -12,6 +13,7 @@ const tempRoots: string[] = [];
 function createJob(jobId: string): PcfReportJobRecord {
   return {
     jobId,
+    brandId: DEFAULT_BRAND_ID,
     reportType: "pcf",
     status: "draft",
     createdAt: "2026-06-08T00:00:00.000Z",
@@ -96,6 +98,25 @@ describe("FilesystemReportJobStore", () => {
     const job = createJob("job-write-read");
 
     await store.write(job);
+    const saved = await store.read(job.jobId);
+
+    expect(saved).toEqual(job);
+  });
+
+  it("hydrates legacy jobs without brandId as Relats", async () => {
+    const rootDir = await mkdtemp(join(tmpdir(), "fm-store-"));
+    tempRoots.push(rootDir);
+
+    const store = new FilesystemReportJobStore(rootDir);
+    const job = createJob("legacy-job");
+    const legacyJob: Partial<PcfReportJobRecord> = { ...job };
+    delete legacyJob.brandId;
+    await writeFile(
+      join(rootDir, "legacy-job.json"),
+      JSON.stringify(legacyJob, null, 2),
+      "utf8",
+    );
+
     const saved = await store.read(job.jobId);
 
     expect(saved).toEqual(job);

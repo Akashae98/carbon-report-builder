@@ -1,5 +1,6 @@
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 
+import { DEFAULT_BRAND_ID } from "@/lib/branding";
 import { getReportJobFilePath, TEMP_REPORTS_ROOT } from "@/lib/files/report-paths";
 import { XanoReportJobStore } from "@/lib/jobs/xano-report-job-store";
 import type { PcfReportJobRecord, ReportJobRecord } from "@/types";
@@ -21,7 +22,7 @@ export class FilesystemReportJobStore implements ReportJobStore {
     try {
       const filePath = getReportJobFilePath(jobId, this.rootDir);
       const payload = await readFile(filePath, "utf8");
-      return JSON.parse(payload) as ReportJobRecord;
+      return hydrateReportJobRecord(JSON.parse(payload));
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") {
         return null;
@@ -45,6 +46,15 @@ export class FilesystemReportJobStore implements ReportJobStore {
     const filePath = getReportJobFilePath(jobId, this.rootDir);
     await rm(filePath, { force: true });
   }
+}
+
+function hydrateReportJobRecord(value: unknown): ReportJobRecord {
+  const job = value as ReportJobRecord & { brandId?: string };
+
+  return {
+    ...job,
+    brandId: job.brandId ?? DEFAULT_BRAND_ID,
+  } as ReportJobRecord;
 }
 
 export type ReportJobStoreDriver = "filesystem" | "xano";
@@ -114,6 +124,7 @@ export function isCompletePcfReportJob(
 
   if (
     typeof job.jobId !== "string" ||
+    typeof job.brandId !== "string" ||
     typeof job.createdAt !== "string" ||
     !isRecord(upload) ||
     typeof upload.fileName !== "string" ||
