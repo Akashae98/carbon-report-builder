@@ -13,6 +13,7 @@ export function ReportTopProductRankingSection({
   return (
     <ReportSection
       id="top-product-ranking"
+      sectionNumber="5"
       eyebrow="Clasificación de productos"
       title="Productos con mayor huella agregada"
       description="Relación de los cinco productos con mayor volumen de emisiones dentro del conjunto analizado."

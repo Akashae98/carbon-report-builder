@@ -7,14 +7,14 @@ interface PrintStageBreakdownChartProps {
 function renderEmptyState(width: number, height: number, label: string) {
   return (
     <>
-      <rect x="0" y="0" width={width} height={height} rx="24" fill="#ffffff" />
+      <rect x="0" y="0" width={width} height={height} fill="#ffffff" />
       <text
         x={width / 2}
         y={height / 2}
         textAnchor="middle"
-        fontSize="14"
+        fontSize="13"
         fontFamily="Arial, Helvetica, sans-serif"
-        fill="#6b6578"
+        fill="#6d6a67"
       >
         {label}
       </text>
@@ -22,11 +22,25 @@ function renderEmptyState(width: number, height: number, label: string) {
   );
 }
 
+function getBarColor(isDominant: boolean, index: number) {
+  if (isDominant) {
+    return "#ff5710";
+  }
+
+  return index % 2 === 0 ? "#595959" : "#7a7a7a";
+}
+
 export function PrintStageBreakdownChart({
   items,
 }: PrintStageBreakdownChartProps) {
   const maxValue = Math.max(...items.map(({ total }) => total), 1);
-  const mobileHeight = Math.max(items.length * 64 + 48, 190);
+  const dominantStage = items.reduce<ReportStageBreakdownItem | null>(
+    (current, item) =>
+      current === null || item.total > current.total ? item : current,
+    null,
+  )?.stage;
+  const mobileHeight = Math.max(items.length * 46 + 30, 160);
+  const desktopHeight = Math.max(items.length * 30 + 54, 210);
 
   return (
     <figure aria-labelledby="stage-breakdown-caption">
@@ -44,56 +58,49 @@ export function PrintStageBreakdownChart({
           ? renderEmptyState(320, mobileHeight, "No hay datos disponibles.")
           : (
               <>
-                <rect
-                  x="0"
-                  y="0"
-                  width="320"
-                  height={mobileHeight}
-                  rx="24"
-                  fill="#ffffff"
-                />
+                <rect x="0" y="0" width="320" height={mobileHeight} fill="#ffffff" />
                 {items.map((item, index) => {
-                  const y = 28 + index * 64;
-                  const width = (item.total / maxValue) * 236;
+                  const y = 22 + index * 46;
+                  const width = (item.total / maxValue) * 170;
+                  const isDominant = item.stage === dominantStage;
 
                   return (
                     <g key={item.stage}>
                       <text
-                        x="24"
+                        x="0"
                         y={y}
-                        fontSize="14"
+                        fontSize="12"
                         fontFamily="Arial, Helvetica, sans-serif"
-                        fill="#4d4d4d"
+                        fill="#3f3f3f"
                       >
                         {item.label}
                       </text>
+                      <rect
+                        x="0"
+                        y={y + 10}
+                        width="185"
+                        height="6"
+                        rx="2"
+                        fill="#eee9e5"
+                      />
+                      <rect
+                        x="0"
+                        y={y + 10}
+                        width={width}
+                        height="6"
+                        rx="2"
+                        fill={getBarColor(isDominant, index)}
+                      />
                       <text
-                        x="296"
-                        y={y}
+                        x="300"
+                        y={y + 16}
                         textAnchor="end"
-                        fontSize="14"
+                        fontSize="12"
                         fontFamily="Arial, Helvetica, sans-serif"
                         fill="#1c1c1c"
                       >
                         {item.shareLabel}
                       </text>
-                      <rect
-                        x="24"
-                        y={y + 14}
-                        width="236"
-                        height="14"
-                        rx="7"
-                        fill="#efe8e3"
-                      />
-                      <rect
-                        x="24"
-                        y={y + 14}
-                        width={width}
-                        height="14"
-                        rx="7"
-                        fill={index === 0 ? "#ff5710" : "#1c1c1c"}
-                        opacity={index === 0 ? "1" : `${0.86 - index * 0.1}`}
-                      />
                     </g>
                   );
                 })}
@@ -102,62 +109,54 @@ export function PrintStageBreakdownChart({
       </svg>
 
       <svg
-        viewBox="0 0 640 340"
+        viewBox={`0 0 640 ${desktopHeight}`}
         className="hidden h-auto w-full md:block"
         aria-hidden="true"
         focusable="false"
       >
         {items.length === 0
-          ? renderEmptyState(640, 340, "No hay datos disponibles.")
+          ? renderEmptyState(640, desktopHeight, "No hay datos disponibles.")
           : (
               <>
-                <rect x="0" y="0" width="640" height="340" rx="28" fill="#ffffff" />
-                <line
-                  x1="120"
-                  y1="48"
-                  x2="120"
-                  y2="282"
-                  stroke="#d7cec7"
-                  strokeWidth="2"
-                />
-                <line
-                  x1="120"
-                  y1="282"
-                  x2="584"
-                  y2="282"
-                  stroke="#d7cec7"
-                  strokeWidth="2"
-                />
-
+                <rect x="0" y="0" width="640" height={desktopHeight} fill="#ffffff" />
                 {items.map((item, index) => {
-                  const y = 72 + index * 42;
-                  const width = (item.total / maxValue) * 420;
+                  const y = 34 + index * 30;
+                  const width = (item.total / maxValue) * 340;
+                  const isDominant = item.stage === dominantStage;
 
                   return (
                     <g key={item.stage}>
                       <text
-                        x="108"
-                        y={y + 14}
+                        x="118"
+                        y={y + 4}
                         textAnchor="end"
-                        fontSize="13"
+                        fontSize="12"
                         fontFamily="Arial, Helvetica, sans-serif"
-                        fill="#4d4d4d"
+                        fill="#3f3f3f"
                       >
                         {item.label}
                       </text>
                       <rect
-                        x="132"
-                        y={y}
+                        x="140"
+                        y={y - 5}
+                        width="360"
+                        height="8"
+                        rx="2"
+                        fill="#eee9e5"
+                      />
+                      <rect
+                        x="140"
+                        y={y - 5}
                         width={width}
-                        height="22"
-                        rx="11"
-                        fill={index === 0 ? "#ff5710" : "#1c1c1c"}
-                        opacity={index === 0 ? "1" : `${0.86 - index * 0.1}`}
+                        height="8"
+                        rx="2"
+                        fill={getBarColor(isDominant, index)}
                       />
                       <text
-                        x={Math.min(132 + width + 12, 576)}
-                        y={y + 15}
-                        fontSize="13"
+                        x="568"
+                        y={y + 4}
+                        textAnchor="end"
+                        fontSize="12"
                         fontFamily="Arial, Helvetica, sans-serif"
                         fill="#1c1c1c"
                       >

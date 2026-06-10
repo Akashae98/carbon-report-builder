@@ -13,6 +13,7 @@ export function ReportMethodologySection({
   return (
     <ReportSection
       id="methodology"
+      sectionNumber="2"
       eyebrow="Metodología"
       title="Criterio de presentación"
       description="Base utilizada para estructurar e interpretar los resultados incluidos en esta entrega."

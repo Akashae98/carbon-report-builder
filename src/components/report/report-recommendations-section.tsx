@@ -12,20 +12,21 @@ export function ReportRecommendationsSection({
   return (
     <ReportSection
       id="recommendations"
+      sectionNumber="6"
       eyebrow="Recomendaciones"
-      title="Líneas de revisión recomendadas"
+      title="Recomendaciones"
       description="Aspectos que conviene revisar a partir de la distribución observada en los datos disponibles."
     >
-      <ol className="space-y-4">
+      <ol className="divide-y divide-black/10 border-y border-black/10">
         {preview.narratives.recommendations.map((recommendation, index) => (
           <li
             key={recommendation}
-            className="flex gap-4 rounded-[1.1rem] border border-black/8 bg-[var(--report-panel)] px-5 py-5"
+            className="flex gap-5 py-5"
           >
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--report-accent)] text-sm font-semibold text-white">
-              {index + 1}
+            <span className="pt-1 text-sm font-semibold text-[var(--report-accent)]">
+              {String(index + 1).padStart(2, "0")}
             </span>
-            <p className="pt-1 text-[0.98rem] leading-7 text-black/72">
+            <p className="text-[0.98rem] leading-7 text-black/72">
               {recommendation}
             </p>
           </li>

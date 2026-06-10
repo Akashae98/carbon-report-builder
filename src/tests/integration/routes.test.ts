@@ -269,7 +269,8 @@ describe("route scaffolding", () => {
     expect(markup).toContain("Informe de huella de carbono de producto");
     expect(markup).toContain("Contexto del análisis");
     expect(markup).toContain("Productos con mayor huella agregada");
-    expect(markup).toContain("Elaborado con Footprint Mappa");
+    expect(markup).toContain("Preparado con");
+    expect(markup).toContain("Footprint Mappa logo");
     expect(markup).toContain("Descargar PDF");
   });
 

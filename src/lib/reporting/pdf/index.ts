@@ -87,5 +87,4 @@ async function waitForReportAssets(page: BrowserPageAdapter) {
   });
 
   await page.waitForSelector(".report-page .report-sheet", { timeout: 15_000 });
-  await page.waitForSelector("svg", { timeout: 15_000 });
 }
