@@ -1,8 +1,6 @@
-import { BackgroundEmissions } from "@/components/home/background-emissions";
 import { HomeHero } from "@/components/home/home-hero";
+import { HomeUploadExperience } from "@/components/home/home-upload-experience";
 import { MinimalHeader } from "@/components/home/minimal-header";
-import { ReportPreviewCard } from "@/components/home/report-preview-card";
-import { UploadPanel } from "@/components/upload/upload-panel";
 
 export default function Home() {
   return (
@@ -15,15 +13,7 @@ export default function Home() {
             <HomeHero />
           </section>
 
-          <section className="mt-6 grid gap-4 lg:mt-7 xl:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)] xl:items-start">
-            <UploadPanel />
-            <div className="relative isolate">
-              <BackgroundEmissions />
-              <div className="relative z-10">
-                <ReportPreviewCard />
-              </div>
-            </div>
-          </section>
+          <HomeUploadExperience />
         </div>
       </div>
     </main>

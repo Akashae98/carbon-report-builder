@@ -142,9 +142,9 @@ describe("route scaffolding", () => {
 
     expect(response.status).toBe(400);
     expect(payload.error).toBe(
-      "No se pudo validar la configuración de branding.",
+      "No se pudo validar el preset visual del informe.",
     );
-    expect(payload.details[0]).toContain("branding de informe disponible");
+    expect(payload.details[0]).toContain("preset visual disponible");
   });
 
   it("returns structured validation errors for invalid CSV uploads", async () => {

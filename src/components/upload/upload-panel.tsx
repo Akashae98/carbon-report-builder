@@ -1,8 +1,15 @@
 "use client";
 
-import { useRef, useState, useTransition, type FormEvent } from "react";
+import {
+  useRef,
+  useState,
+  useTransition,
+  type ChangeEvent,
+  type DragEvent,
+  type FormEvent,
+} from "react";
 
-import { DEFAULT_BRAND_ID, brandOptions, type BrandId } from "@/lib/branding";
+import { brandOptions, type BrandId } from "@/lib/branding";
 
 type StandardChipStatus = "active" | "soon";
 
@@ -39,24 +46,99 @@ function formatFileSize(size: number) {
   return `${size} B`;
 }
 
-export function UploadPanel() {
+type UploadFileCandidate = Pick<File, "name" | "size" | "type">;
+
+export function isCsvFile(file: UploadFileCandidate) {
+  return (
+    file.name.toLowerCase().endsWith(".csv") ||
+    file.type === "text/csv" ||
+    file.type === "application/vnd.ms-excel"
+  );
+}
+
+export function isValidCsvUpload(file: UploadFileCandidate | null) {
+  return file !== null && file.size > 0 && isCsvFile(file);
+}
+
+interface UploadPanelProps {
+  selectedBrandId: BrandId;
+  onBrandChange: (brandId: BrandId) => void;
+}
+
+export function UploadPanel({
+  selectedBrandId,
+  onBrandChange,
+}: UploadPanelProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedBrandId, setSelectedBrandId] = useState<BrandId>(DEFAULT_BRAND_ID);
   const [errors, setErrors] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
   const [isDragActive, setIsDragActive] = useState(false);
 
+  function resetFileInput() {
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  }
+
   function updateSelectedFile(file: File | null) {
+    setIsDragActive(false);
+
+    if (!file) {
+      setSelectedFile(null);
+      setErrors([]);
+      resetFileInput();
+      return;
+    }
+
+    if (file.size === 0) {
+      setSelectedFile(null);
+      setErrors(["Selecciona un archivo CSV con contenido."]);
+      resetFileInput();
+      return;
+    }
+
+    if (!isCsvFile(file)) {
+      setSelectedFile(null);
+      setErrors(["Selecciona un archivo con formato .csv."]);
+      resetFileInput();
+      return;
+    }
+
     setSelectedFile(file);
     setErrors([]);
+    resetFileInput();
+  }
+
+  function handleFileInputChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.currentTarget.files?.[0] ?? null;
+
+    if (!file) {
+      resetFileInput();
+      return;
+    }
+
+    updateSelectedFile(file);
+  }
+
+  function handleDrop(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+
+    const file = event.dataTransfer.files?.[0] ?? null;
+
+    if (!file) {
+      setIsDragActive(false);
+      return;
+    }
+
+    updateSelectedFile(file);
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErrors([]);
 
-    if (!selectedFile || selectedFile.size === 0) {
+    if (!selectedFile || selectedFile.size === 0 || !isCsvFile(selectedFile)) {
       setErrors(["Selecciona un archivo CSV para generar la vista previa."]);
       return;
     }
@@ -97,6 +179,8 @@ export function UploadPanel() {
     });
   }
 
+  const canGeneratePreview = isValidCsvUpload(selectedFile);
+
   return (
     <section
       id="upload-csv"
@@ -112,76 +196,62 @@ export function UploadPanel() {
         </div>
 
         <div className="max-w-[42rem]">
-          <h2 className="text-[1.65rem] font-semibold tracking-[-0.05em] text-[#241b3c] sm:text-[1.85rem]">
+          <h2 className="text-[1.65rem] font-semibold leading-[1.2] tracking-[-0.05em] text-[#241b3c] sm:text-[1.85rem] sm:leading-[1.18]">
             Sube tu CSV y genera la vista previa del informe
           </h2>
           <p className="mt-2 text-[0.95rem] leading-6 text-[#666076] sm:mt-2.5 sm:text-[0.98rem] sm:leading-7">
-            Acepta archivos CSV con estructura PCF.
+            Acepta CSV con estructura PCF.
           </p>
         </div>
       </div>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
-        <fieldset className="rounded-[0.95rem] bg-[#fff9f6] px-4 py-3 ring-1 ring-[#f2ded5] sm:rounded-[1.05rem]">
-          <legend className="text-[0.72rem] font-semibold uppercase tracking-[0.06em] text-[#a86752]">
-            Configuraci&oacute;n del informe
+        <fieldset className="rounded-[0.85rem] bg-white px-3 py-2.5 ring-1 ring-black/6 sm:flex sm:items-center sm:justify-between sm:gap-3">
+          <legend className="sr-only">
+            Preset visual del informe
           </legend>
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="mt-1 text-sm font-semibold text-[#30264b]">
-                  Branding del informe
-                </p>
-              </div>
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.06em] text-[#a86752]">
-                Demo local, sin cambiar organizaci&oacute;n de usuario
-              </p>
-            </div>
+          <div className="mb-2 min-w-0 sm:mb-0">
+            <p className="text-[0.78rem] font-semibold text-[#30264b]">
+              Preset visual del informe
+            </p>
+            <p className="mt-0.5 text-[0.72rem] leading-4 text-[#7b738b]">
+              Se aplicar&aacute; a la vista previa y al PDF.
+            </p>
+          </div>
 
-            <div className="grid gap-2 sm:grid-cols-2">
-              {brandOptions.map((brand) => {
-                const isSelected = brand.id === selectedBrandId;
+          <div className="flex flex-wrap gap-1.5 sm:justify-end">
+            {brandOptions.map((brand) => {
+              const isSelected = brand.id === selectedBrandId;
 
-                return (
-                  <label
-                    key={brand.id}
-                    className={`flex cursor-pointer items-center gap-3 rounded-[0.9rem] bg-white px-3 py-2.5 text-left ring-1 transition ${
-                      isSelected
-                        ? "ring-[#ffb29f]"
-                        : "ring-black/6 hover:ring-[#ead5cb]"
-                    }`}
-                  >
-                    <input
-                      className="sr-only"
-                      type="radio"
-                      name="brandId"
-                      value={brand.id}
-                      checked={isSelected}
-                      onChange={() => setSelectedBrandId(brand.id)}
-                    />
-                    <span
-                      className="h-8 w-8 shrink-0 rounded-[0.75rem] ring-1 ring-black/8"
-                      style={{ backgroundColor: brand.primaryColor }}
-                      aria-hidden="true"
-                    />
-                    <span className="min-w-0">
-                      <span className="block text-sm font-semibold text-[#30264b]">
-                        {brand.name}
-                      </span>
-                      <span className="block text-[0.74rem] text-[#7b738b]">
-                        Branding corporativo aplicado
-                      </span>
-                    </span>
-                    <span
-                      className={`ml-auto h-2.5 w-2.5 rounded-full ${
-                        isSelected ? "bg-[#ff6c4d]" : "bg-black/15"
-                      }`}
-                      aria-hidden="true"
-                    />
-                  </label>
-                );
-              })}
-            </div>
+              return (
+                <label
+                  key={brand.id}
+                  className={`inline-flex cursor-pointer items-center gap-2 rounded-full px-2.5 py-1.5 text-[0.76rem] font-semibold transition ring-1 ${
+                    isSelected
+                      ? "bg-[#fff7f3] text-[#30264b] ring-[#ffb29f]"
+                      : "bg-[#faf9fd] text-[#6d657e] ring-black/6 hover:ring-[#ead5cb]"
+                  }`}
+                >
+                  <input
+                    className="sr-only"
+                    type="radio"
+                    name="brandId"
+                    value={brand.id}
+                    checked={isSelected}
+                    onChange={() => onBrandChange(brand.id)}
+                  />
+                  <span
+                    className="h-2.5 w-2.5 rounded-full ring-1 ring-black/8"
+                    style={{ backgroundColor: brand.primaryColor }}
+                    aria-hidden="true"
+                  />
+                  <span>{brand.name}</span>
+                  {isSelected ? (
+                    <span className="sr-only">seleccionado</span>
+                  ) : null}
+                </label>
+              );
+            })}
           </div>
         </fieldset>
 
@@ -197,13 +267,15 @@ export function UploadPanel() {
           }}
           onDragLeave={(event) => {
             event.preventDefault();
+            if (
+              event.relatedTarget instanceof Node &&
+              event.currentTarget.contains(event.relatedTarget)
+            ) {
+              return;
+            }
             setIsDragActive(false);
           }}
-          onDrop={(event) => {
-            event.preventDefault();
-            setIsDragActive(false);
-            updateSelectedFile(event.dataTransfer.files?.[0] ?? null);
-          }}
+          onDrop={handleDrop}
         >
           <div className="mx-auto flex max-w-[29rem] flex-col items-center gap-3 sm:gap-5">
             <div className="flex h-9 w-9 items-center justify-center rounded-[0.85rem] bg-[#f4efff] text-[#7f56d9] ring-1 ring-[#e4daf8] sm:h-11 sm:w-11 sm:rounded-[1rem]">
@@ -234,23 +306,25 @@ export function UploadPanel() {
             </div>
 
             <input
+              id="csv-file-input"
               ref={inputRef}
               className="sr-only"
               type="file"
               name="file"
               accept=".csv,text/csv"
-              onChange={(event) =>
-                updateSelectedFile(event.currentTarget.files?.[0] ?? null)
-              }
+              onChange={handleFileInputChange}
             />
 
-            <button
-              className="inline-flex w-full items-center justify-center rounded-full bg-[#6d3bcf] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(109,59,207,0.18)] transition hover:bg-[#5f31b8] sm:w-auto"
-              type="button"
-              onClick={() => inputRef.current?.click()}
+            <label
+              htmlFor="csv-file-input"
+              className={`inline-flex w-full cursor-pointer items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition sm:w-auto ${
+                selectedFile
+                  ? "bg-white text-[#6d3bcf] ring-1 ring-[#d9ccf4] hover:bg-[#f8f5ff] hover:ring-[#c8b6ed]"
+                  : "bg-[#6d3bcf] text-white shadow-[0_12px_24px_rgba(109,59,207,0.18)] hover:bg-[#5f31b8]"
+              }`}
             >
-              Seleccionar archivo CSV
-            </button>
+              {selectedFile ? "Cambiar archivo" : "Seleccionar archivo CSV"}
+            </label>
           </div>
         </div>
 
@@ -274,7 +348,7 @@ export function UploadPanel() {
               </span>
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-[#30264b]">
-                  {selectedFile.name}
+                  Archivo seleccionado: {selectedFile.name}
                 </p>
                 <p className="mt-1 text-[0.78rem] text-[#7b738b]">
                   {formatFileSize(selectedFile.size)}
@@ -282,7 +356,7 @@ export function UploadPanel() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-2">
               <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[0.72rem] font-medium text-[#32a05d] ring-1 ring-[#d6f0df]">
                 <span className="h-1.5 w-1.5 rounded-full bg-current" />
                 Cargado
@@ -290,24 +364,9 @@ export function UploadPanel() {
               <button
                 type="button"
                 onClick={() => updateSelectedFile(null)}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-[0.9rem] text-[#8d849e] ring-1 ring-black/6 transition hover:bg-[#f7f5fb] hover:text-[#5f5478]"
-                aria-label="Eliminar archivo seleccionado"
+                className="inline-flex h-9 min-w-fit items-center justify-center whitespace-nowrap rounded-[0.9rem] px-3 text-xs font-semibold text-[#8d849e] ring-1 ring-black/6 transition hover:bg-[#f7f5fb] hover:text-[#5f5478]"
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-4.5 w-4.5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M3 6h18" />
-                  <path d="M8 6V4h8v2" />
-                  <path d="M19 6l-1 14H6L5 6" />
-                  <path d="M10 11v6" />
-                  <path d="M14 11v6" />
-                </svg>
+                Quitar archivo
               </button>
             </div>
           </div>
@@ -324,15 +383,11 @@ export function UploadPanel() {
           </div>
         ) : null}
 
-        <div className="flex flex-col gap-4 border-t border-black/6 pt-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="max-w-[22rem] text-sm leading-6 text-[#726b7f]">
-            OCF estará disponible en una próxima iteración.
-          </p>
-
+        <div className="flex justify-end border-t border-black/6 pt-4">
           <button
-            className="inline-flex w-full items-center justify-center rounded-full bg-[#ff6c4d] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(255,108,77,0.16)] transition hover:bg-[#f25939] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:self-auto"
+            className="inline-flex w-full items-center justify-center rounded-full bg-[#ff6c4d] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(255,108,77,0.16)] transition hover:bg-[#f25939] disabled:cursor-not-allowed disabled:bg-[#f2e7e5] disabled:text-[#a99b99] disabled:shadow-none sm:w-auto sm:self-auto"
             type="submit"
-            disabled={isPending}
+            disabled={isPending || !canGeneratePreview}
           >
             {isPending ? "Generando vista previa..." : "Generar vista previa"}
           </button>

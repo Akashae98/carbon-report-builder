@@ -32,8 +32,8 @@ export async function POST(request: Request) {
   if (!isBrandId(brandId)) {
     return Response.json(
       {
-        error: "No se pudo validar la configuraci\u00f3n de branding.",
-        details: ["Selecciona un branding de informe disponible para esta demo."],
+        error: "No se pudo validar el preset visual del informe.",
+        details: ["Selecciona un preset visual disponible para esta demo."],
       },
       { status: 400 },
     );
