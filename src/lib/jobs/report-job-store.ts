@@ -66,10 +66,13 @@ export function resolveReportJobStoreDriver(
 }
 
 function createXanoReportJobStore() {
-  const endpoint = process.env.XANO_REPORTS_ENDPOINT;
+  const endpoint =
+    process.env.XANO_REPORT_JOBS_ENDPOINT ?? process.env.XANO_REPORTS_ENDPOINT;
 
   if (!endpoint) {
-    throw new Error("XANO_REPORTS_ENDPOINT is required when REPORT_JOB_STORE_DRIVER=xano.");
+    throw new Error(
+      "XANO_REPORT_JOBS_ENDPOINT is required when REPORT_JOB_STORE_DRIVER=xano.",
+    );
   }
 
   return new XanoReportJobStore({

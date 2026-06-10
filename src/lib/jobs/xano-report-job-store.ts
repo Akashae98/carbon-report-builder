@@ -1,3 +1,4 @@
+import { DEFAULT_BRAND_ID } from "@/lib/branding";
 import type { ReportJobRecord } from "@/types";
 
 const DEFAULT_XANO_TIMEOUT_MS = 15_000;
@@ -22,6 +23,64 @@ function buildXanoHeaders(apiKey?: string) {
 
 export function buildXanoReportJobUrl(baseUrl: string, jobId: string) {
   return `${stripTrailingSlash(baseUrl)}/${encodeURIComponent(jobId)}`;
+}
+
+export interface XanoReportJobRow {
+  id: string;
+  brand_id: string;
+  report_type: string;
+  status: string;
+  source_file_name: string;
+  total_emissions: number;
+  dominant_stage: string;
+  payload_json: unknown;
+  created_at: string;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+export function parsePayloadJson(value: unknown): ReportJobRecord | null {
+  if (typeof value === "string") {
+    try {
+      return parsePayloadJson(JSON.parse(value));
+    } catch {
+      return null;
+    }
+  }
+
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  return {
+    ...value,
+    brandId:
+      typeof value.brandId === "string" ? value.brandId : DEFAULT_BRAND_ID,
+  } as ReportJobRecord;
+}
+
+export function toXanoReportJobRow(job: ReportJobRecord): XanoReportJobRow {
+  return {
+    id: job.jobId,
+    brand_id: job.brandId,
+    report_type: job.reportType,
+    status: job.status,
+    source_file_name: job.upload.fileName,
+    total_emissions: job.derivedMetrics.totalEmissions,
+    dominant_stage: job.derivedMetrics.topContributorStage,
+    payload_json: job,
+    created_at: job.createdAt,
+  };
+}
+
+export function fromXanoReportJobRow(row: unknown): ReportJobRecord | null {
+  if (!isRecord(row) || !("payload_json" in row)) {
+    return null;
+  }
+
+  return parsePayloadJson(row.payload_json);
 }
 
 export interface XanoReportJobStoreOptions {
@@ -57,7 +116,7 @@ export class XanoReportJobStore {
       throw new Error(`Xano read failed with status ${response.status}.`);
     }
 
-    return (await response.json()) as ReportJobRecord;
+    return fromXanoReportJobRow(await response.json());
   }
 
   async write(job: ReportJobRecord): Promise<void> {
@@ -67,7 +126,7 @@ export class XanoReportJobStore {
         headers: buildXanoHeaders(this.apiKey),
         method: "PUT",
         signal: AbortSignal.timeout(DEFAULT_XANO_TIMEOUT_MS),
-        body: JSON.stringify(job),
+        body: JSON.stringify(toXanoReportJobRow(job)),
       },
     );
 

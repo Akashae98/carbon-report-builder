@@ -20,10 +20,25 @@ describe("deployment adapters", () => {
 
   it("selects the xano job store driver from env", () => {
     vi.stubEnv("REPORT_JOB_STORE_DRIVER", "xano");
-    vi.stubEnv("XANO_REPORTS_ENDPOINT", "https://xano.example/api/reports");
+    vi.stubEnv("XANO_REPORT_JOBS_ENDPOINT", "https://xano.example/api/report_jobs");
 
     expect(resolveReportJobStoreDriver()).toBe("xano");
     expect(createReportJobStore().constructor.name).toBe("XanoReportJobStore");
+  });
+
+  it("keeps temporary support for the legacy Xano reports endpoint env var", () => {
+    vi.stubEnv("REPORT_JOB_STORE_DRIVER", "xano");
+    vi.stubEnv("XANO_REPORTS_ENDPOINT", "https://xano.example/api/reports");
+
+    expect(createReportJobStore().constructor.name).toBe("XanoReportJobStore");
+  });
+
+  it("requires a Xano report jobs endpoint when xano store driver is selected", () => {
+    vi.stubEnv("REPORT_JOB_STORE_DRIVER", "xano");
+
+    expect(() => createReportJobStore()).toThrow(
+      "XANO_REPORT_JOBS_ENDPOINT is required when REPORT_JOB_STORE_DRIVER=xano.",
+    );
   });
 
   it("defaults the PDF browser driver to local", () => {
