@@ -1,6 +1,6 @@
-# Footprint Mappa
+# Carbon Report Builder
 
-Web application that transforms PCF CSV datasets into professional report previews and PDF-ready report outputs.
+Local MVP for generating client-branded carbon footprint report previews and PDF-ready outputs from PCF CSV datasets.
 
 ## Stack
 - Next.js
@@ -14,12 +14,14 @@ Web application that transforms PCF CSV datasets into professional report previe
 - Report preview route under `reports/[jobId]`
 - Temporary filesystem job store under `.tmp/reports`
 - PDF route scaffold under `api/reports/pdf/[jobId]`
-- Relats used as the default demo client branding for report preview surfaces
+- Local client branding presets for report preview and PDF surfaces
+- Relats remains the default demo client branding
 
 ## Branding Direction
-- Footprint Mappa is the application brand
+- Carbon Report Builder is the repository/project name
+- Footprint Mappa remains the application/provider brand in the current UI and PDF footer
 - Report preview and PDF surfaces are intended to use client-specific branding
-- Relats is the current demo client, not the fixed identity of the product
+- Relats and Demo Industrial are local demo client presets, not authenticated tenant accounts
 
 ## Project Structure
 - `src/app`: routes and server entrypoints

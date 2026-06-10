@@ -1,4 +1,4 @@
-# Footprint Mappa Technical Challenge
+# Carbon Report Builder Technical Challenge
 
 Web application that transforms carbon footprint CSV datasets into professional PDF reports.
 
