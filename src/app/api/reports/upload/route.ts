@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 
-import { DEFAULT_BRAND_ID } from "@/lib/branding";
+import { DEFAULT_BRAND_ID, isBrandId } from "@/lib/branding";
 import { buildPcfReportDefinition } from "@/lib/pcf/report-definition";
 import { reportJobStore } from "@/lib/jobs/report-job-store";
 import { buildPcfDerivedMetrics, buildPcfNormalizedDataset } from "@/lib/pcf/normalization";
@@ -15,10 +15,26 @@ export const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024;
 export async function POST(request: Request) {
   const formData = await request.formData();
   const file = formData.get("file");
+  const brandIdPayload = formData.get("brandId");
 
   if (!(file instanceof File)) {
     return Response.json(
       { error: "Se necesita un archivo CSV para crear un informe PCF." },
+      { status: 400 },
+    );
+  }
+
+  const brandId =
+    typeof brandIdPayload !== "string" || brandIdPayload.length === 0
+      ? DEFAULT_BRAND_ID
+      : brandIdPayload;
+
+  if (!isBrandId(brandId)) {
+    return Response.json(
+      {
+        error: "No se pudo validar la configuraci\u00f3n de branding.",
+        details: ["Selecciona un branding de informe disponible para esta demo."],
+      },
       { status: 400 },
     );
   }
@@ -65,7 +81,7 @@ export async function POST(request: Request) {
 
   const job: PcfReportJobRecord = {
     jobId,
-    brandId: DEFAULT_BRAND_ID,
+    brandId,
     reportType: "pcf",
     status: "draft",
     createdAt: new Date().toISOString(),

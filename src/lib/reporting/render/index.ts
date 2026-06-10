@@ -30,6 +30,8 @@ export function getReportPreviewModel(
       providerName: brand.providerName,
       providerLogoSrc: brand.providerLogoPath,
       accentColor: brand.primaryColor,
+      panelColor: brand.secondaryColor,
+      textColor: brand.textColor,
     },
     document: {
       title: job.reportDefinition.title,

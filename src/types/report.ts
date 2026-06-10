@@ -49,6 +49,8 @@ export interface ReportPreviewModel {
     providerName: string;
     providerLogoSrc: string;
     accentColor: string;
+    panelColor: string;
+    textColor: string;
   };
   document: {
     title: string;

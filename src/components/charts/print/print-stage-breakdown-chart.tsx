@@ -2,6 +2,7 @@ import type { ReportStageBreakdownItem } from "@/types";
 
 interface PrintStageBreakdownChartProps {
   items: ReportStageBreakdownItem[];
+  accentColor: string;
 }
 
 function renderEmptyState(width: number, height: number, label: string) {
@@ -22,9 +23,9 @@ function renderEmptyState(width: number, height: number, label: string) {
   );
 }
 
-function getBarColor(isDominant: boolean, index: number) {
+function getBarColor(isDominant: boolean, index: number, accentColor: string) {
   if (isDominant) {
-    return "#ff5710";
+    return accentColor;
   }
 
   return index % 2 === 0 ? "#595959" : "#7a7a7a";
@@ -32,6 +33,7 @@ function getBarColor(isDominant: boolean, index: number) {
 
 export function PrintStageBreakdownChart({
   items,
+  accentColor,
 }: PrintStageBreakdownChartProps) {
   const maxValue = Math.max(...items.map(({ total }) => total), 1);
   const dominantStage = items.reduce<ReportStageBreakdownItem | null>(
@@ -89,7 +91,7 @@ export function PrintStageBreakdownChart({
                         width={width}
                         height="6"
                         rx="2"
-                        fill={getBarColor(isDominant, index)}
+                        fill={getBarColor(isDominant, index, accentColor)}
                       />
                       <text
                         x="300"
@@ -150,7 +152,7 @@ export function PrintStageBreakdownChart({
                         width={width}
                         height="8"
                         rx="2"
-                        fill={getBarColor(isDominant, index)}
+                        fill={getBarColor(isDominant, index, accentColor)}
                       />
                       <text
                         x="568"

@@ -1,4 +1,5 @@
 import type { ReportDefinition, ReportPreviewModel } from "@/types";
+import type { CSSProperties } from "react";
 
 import { ReportConclusionsSection } from "@/components/report/report-conclusions-section";
 import { ReportCoverSection } from "@/components/report/report-cover-section";
@@ -26,8 +27,17 @@ const reportSectionRenderers = {
 } as const;
 
 export function ReportShell({ reportDefinition, preview }: ReportShellProps) {
+  const brandStyle = {
+    "--report-accent": preview.branding.accentColor,
+    "--report-text": preview.branding.textColor,
+    "--report-panel": preview.branding.panelColor,
+  } as CSSProperties;
+
   return (
-    <article className="report-shell mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 md:px-10">
+    <article
+      className="report-shell mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 md:px-10"
+      style={brandStyle}
+    >
       {reportDefinition.sections.map((section) => {
         const SectionComponent =
           reportSectionRenderers[

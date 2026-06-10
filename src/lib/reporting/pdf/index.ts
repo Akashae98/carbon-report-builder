@@ -1,4 +1,5 @@
 import type { BrowserAdapter, BrowserPageAdapter } from "@/lib/reporting/pdf/types";
+import { DEFAULT_BRAND_ID, type BrandId } from "@/lib/branding";
 
 export const PDF_RUNTIME_TARGET = "nodejs";
 
@@ -24,8 +25,11 @@ export function resolvePdfBrowserDriver(
   return value === "vercel" ? "vercel" : "local";
 }
 
-export function buildReportPdfFileName(jobId: string) {
-  return `relats-pcf-report-${jobId}.pdf`;
+export function buildReportPdfFileName(
+  jobId: string,
+  brandId: BrandId = DEFAULT_BRAND_ID,
+) {
+  return `${brandId}-pcf-report-${jobId}.pdf`;
 }
 
 export async function createPdfBrowser(

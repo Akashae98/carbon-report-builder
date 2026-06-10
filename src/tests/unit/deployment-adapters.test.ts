@@ -1,7 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createReportJobStore, resolveReportJobStoreDriver } from "@/lib/jobs/report-job-store";
-import { resolvePdfBrowserDriver, resolveReportBaseUrl } from "@/lib/reporting/pdf";
+import {
+  buildReportPdfFileName,
+  resolvePdfBrowserDriver,
+  resolveReportBaseUrl,
+} from "@/lib/reporting/pdf";
 
 describe("deployment adapters", () => {
   afterEach(() => {
@@ -24,6 +28,13 @@ describe("deployment adapters", () => {
 
   it("defaults the PDF browser driver to local", () => {
     expect(resolvePdfBrowserDriver(undefined)).toBe("local");
+  });
+
+  it("builds brand-aware PDF filenames", () => {
+    expect(buildReportPdfFileName("job-1")).toBe("relats-pcf-report-job-1.pdf");
+    expect(buildReportPdfFileName("job-2", "demo-industrial")).toBe(
+      "demo-industrial-pcf-report-job-2.pdf",
+    );
   });
 
   it("selects the Vercel PDF browser driver from env", () => {

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="88" viewBox="0 0 320 88" role="img" aria-labelledby="title desc">
+  <title id="title">Demo Industrial logo</title>
+  <desc id="desc">A sober geometric mark with the Demo Industrial wordmark.</desc>
+  <rect width="320" height="88" fill="none"/>
+  <g fill="none" fill-rule="evenodd">
+    <rect x="8" y="14" width="60" height="60" rx="10" fill="#172033"/>
+    <path d="M23 55h30M23 44h30M23 33h30" stroke="#dbeafe" stroke-width="5" stroke-linecap="round"/>
+    <path d="M53 29v30" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <text x="84" y="42" fill="#172033" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">
+    Demo Industrial
+  </text>
+  <text x="85" y="62" fill="#526071" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600" letter-spacing="1.8">
+    CARBON REPORTING
+  </text>
+</svg>
