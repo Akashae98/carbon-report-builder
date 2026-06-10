@@ -2,6 +2,8 @@
 
 import { useRef, useState, useTransition, type FormEvent } from "react";
 
+import { DEFAULT_BRAND_ID, brandOptions, type BrandId } from "@/lib/branding";
+
 type StandardChipStatus = "active" | "soon";
 
 interface StandardChipProps {
@@ -40,6 +42,7 @@ function formatFileSize(size: number) {
 export function UploadPanel() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedBrandId, setSelectedBrandId] = useState<BrandId>(DEFAULT_BRAND_ID);
   const [errors, setErrors] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
   const [isDragActive, setIsDragActive] = useState(false);
@@ -60,6 +63,7 @@ export function UploadPanel() {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
+    formData.append("brandId", selectedBrandId);
 
     startTransition(async () => {
       try {
@@ -118,6 +122,69 @@ export function UploadPanel() {
       </div>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
+        <fieldset className="rounded-[0.95rem] bg-[#fff9f6] px-4 py-3 ring-1 ring-[#f2ded5] sm:rounded-[1.05rem]">
+          <legend className="text-[0.72rem] font-semibold uppercase tracking-[0.06em] text-[#a86752]">
+            Configuraci&oacute;n del informe
+          </legend>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="mt-1 text-sm font-semibold text-[#30264b]">
+                  Branding del informe
+                </p>
+              </div>
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.06em] text-[#a86752]">
+                Demo local, sin cambiar organizaci&oacute;n de usuario
+              </p>
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-2">
+              {brandOptions.map((brand) => {
+                const isSelected = brand.id === selectedBrandId;
+
+                return (
+                  <label
+                    key={brand.id}
+                    className={`flex cursor-pointer items-center gap-3 rounded-[0.9rem] bg-white px-3 py-2.5 text-left ring-1 transition ${
+                      isSelected
+                        ? "ring-[#ffb29f]"
+                        : "ring-black/6 hover:ring-[#ead5cb]"
+                    }`}
+                  >
+                    <input
+                      className="sr-only"
+                      type="radio"
+                      name="brandId"
+                      value={brand.id}
+                      checked={isSelected}
+                      onChange={() => setSelectedBrandId(brand.id)}
+                    />
+                    <span
+                      className="h-8 w-8 shrink-0 rounded-[0.75rem] ring-1 ring-black/8"
+                      style={{ backgroundColor: brand.primaryColor }}
+                      aria-hidden="true"
+                    />
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold text-[#30264b]">
+                        {brand.name}
+                      </span>
+                      <span className="block text-[0.74rem] text-[#7b738b]">
+                        Branding corporativo aplicado
+                      </span>
+                    </span>
+                    <span
+                      className={`ml-auto h-2.5 w-2.5 rounded-full ${
+                        isSelected ? "bg-[#ff6c4d]" : "bg-black/15"
+                      }`}
+                      aria-hidden="true"
+                    />
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        </fieldset>
+
         <div
           className={`rounded-[0.95rem] px-4 py-4 text-center transition ring-1 sm:rounded-[1.2rem] sm:px-6 sm:py-7 ${
             isDragActive

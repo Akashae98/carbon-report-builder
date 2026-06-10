@@ -6,10 +6,12 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/reporting/pdf", () => ({
   PDF_RUNTIME_TARGET: "nodejs",
-  buildReportPdfFileName: (jobId: string) => `relats-pcf-report-${jobId}.pdf`,
+  buildReportPdfFileName: (jobId: string, brandId = "relats") =>
+    `${brandId}-pcf-report-${jobId}.pdf`,
   generateReportPdf: vi.fn(async () => new Uint8Array([37, 80, 68, 70])),
 }));
 
+import { DEFAULT_BRAND_ID } from "@/lib/branding";
 import { reportJobStore } from "@/lib/jobs/report-job-store";
 import { GET as getPdfRoute } from "@/app/api/reports/pdf/[jobId]/route";
 import { GET as getReportPdfRedirectRoute } from "@/app/reports/pdf/[jobId]/route";
@@ -25,6 +27,7 @@ const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024;
 function createIncompletePcfJob(jobId: string): ReportJobRecord {
   return {
     jobId,
+    brandId: DEFAULT_BRAND_ID,
     reportType: "pcf",
     status: "draft",
     createdAt: "2026-06-09T10:30:00.000Z",
@@ -90,10 +93,58 @@ describe("route scaffolding", () => {
 
     const saved = await reportJobStore.read(payload.jobId);
     expect(saved?.jobId).toBe(payload.jobId);
+    expect(saved?.brandId).toBe(DEFAULT_BRAND_ID);
     expect(saved?.reportType).toBe("pcf");
     expect(saved?.schemaValidation.isValid).toBe(true);
     expect(saved?.derivedMetrics.totalProducts).toBe(6);
     expect(saved?.derivedMetrics.topContributorStage).toBe("Use");
+  });
+
+  it("persists a selected Demo Industrial brand through the upload route", async () => {
+    const formData = new FormData();
+    formData.set(
+      "file",
+      new File([readSamplePcfCsv()], "sample_pcf.csv", { type: "text/csv" }),
+    );
+    formData.set("brandId", "demo-industrial");
+
+    const response = await postUploadRoute(
+      new Request("http://localhost/api/reports/upload", {
+        method: "POST",
+        body: formData,
+      }),
+    );
+    const payload = (await response.json()) as { jobId: string };
+    createdJobIds.push(payload.jobId);
+
+    expect(response.status).toBe(201);
+    await expect(reportJobStore.read(payload.jobId)).resolves.toMatchObject({
+      brandId: "demo-industrial",
+      reportType: "pcf",
+    });
+  });
+
+  it("rejects unknown report brand ids", async () => {
+    const formData = new FormData();
+    formData.set(
+      "file",
+      new File([readSamplePcfCsv()], "sample_pcf.csv", { type: "text/csv" }),
+    );
+    formData.set("brandId", "unknown-brand");
+
+    const response = await postUploadRoute(
+      new Request("http://localhost/api/reports/upload", {
+        method: "POST",
+        body: formData,
+      }),
+    );
+    const payload = (await response.json()) as { error: string; details: string[] };
+
+    expect(response.status).toBe(400);
+    expect(payload.error).toBe(
+      "No se pudo validar la configuración de branding.",
+    );
+    expect(payload.details[0]).toContain("branding de informe disponible");
   });
 
   it("returns structured validation errors for invalid CSV uploads", async () => {
@@ -196,6 +247,35 @@ describe("route scaffolding", () => {
       jobId: payload.jobId,
       requestOrigin: "http://localhost",
     });
+  });
+
+  it("uses the selected brand id in PDF filenames", async () => {
+    const formData = new FormData();
+    formData.set(
+      "file",
+      new File([readSamplePcfCsv()], "sample_pcf.csv", { type: "text/csv" }),
+    );
+    formData.set("brandId", "demo-industrial");
+
+    const uploadResponse = await postUploadRoute(
+      new Request("http://localhost/api/reports/upload", {
+        method: "POST",
+        body: formData,
+      }),
+    );
+    const payload = (await uploadResponse.json()) as { jobId: string };
+    createdJobIds.push(payload.jobId);
+
+    const response = await getPdfRoute(
+      new Request(`http://localhost/api/reports/pdf/${payload.jobId}`),
+      {
+        params: Promise.resolve({ jobId: payload.jobId }),
+      },
+    );
+
+    expect(response.headers.get("Content-Disposition")).toBe(
+      `attachment; filename="demo-industrial-pcf-report-${payload.jobId}.pdf"`,
+    );
   });
 
   it("returns a controlled error when PDF generation fails", async () => {

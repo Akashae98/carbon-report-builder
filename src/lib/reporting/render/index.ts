@@ -5,6 +5,7 @@ import type {
   ReportRankedProduct,
   ReportStageBreakdownItem,
 } from "@/types";
+import { getBrandProfile } from "@/lib/branding";
 import {
   formatEmissionsLabel,
   formatLifecycleStage,
@@ -13,14 +14,10 @@ import {
   normalizeSpanishDisplayText,
 } from "@/lib/formatting";
 
-const REPORT_CLIENT_NAME = "Relats";
-const REPORT_LOGO_PATH = "/brands/relats/logo-relats.png";
-const REPORT_ACCENT_COLOR = "#ff5710";
-const REPORT_GENERATED_BY = "Elaborado con Footprint Mappa";
-
 export function getReportPreviewModel(
   job: PcfReportJobRecord,
 ): ReportPreviewModel {
+  const brand = getBrandProfile(job.brandId);
   const lifecycleItems = buildLifecycleItems(job);
   const rankingItems = buildRankingItems(job.normalizedDataset.products);
   const topProduct = rankingItems[0];
@@ -28,19 +25,23 @@ export function getReportPreviewModel(
 
   return {
     branding: {
-      clientName: REPORT_CLIENT_NAME,
-      logoSrc: REPORT_LOGO_PATH,
-      accentColor: REPORT_ACCENT_COLOR,
+      clientName: brand.name,
+      logoSrc: brand.logoPath,
+      providerName: brand.providerName,
+      providerLogoSrc: brand.providerLogoPath,
+      accentColor: brand.primaryColor,
+      panelColor: brand.secondaryColor,
+      textColor: brand.textColor,
     },
     document: {
       title: job.reportDefinition.title,
-      subtitle: `Síntesis ejecutiva de resultados PCF para ${REPORT_CLIENT_NAME}`,
+      subtitle: brand.reportSubtitle,
       generatedAtLabel: new Intl.DateTimeFormat("es-ES", {
         dateStyle: "long",
         timeStyle: "short",
       }).format(new Date(job.createdAt)),
       sourceFileName: job.upload.fileName,
-      generatedBy: REPORT_GENERATED_BY,
+      generatedBy: `Elaborado con ${brand.providerName}`,
     },
     summary: {
       productCount: job.derivedMetrics.totalProducts,

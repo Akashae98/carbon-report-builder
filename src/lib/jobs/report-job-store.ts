@@ -1,6 +1,8 @@
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 
+import { DEFAULT_BRAND_ID } from "@/lib/branding";
 import { getReportJobFilePath, TEMP_REPORTS_ROOT } from "@/lib/files/report-paths";
+import { XanoReportJobStore } from "@/lib/jobs/xano-report-job-store";
 import type { PcfReportJobRecord, ReportJobRecord } from "@/types";
 
 export interface ReportJobStore {
@@ -20,7 +22,7 @@ export class FilesystemReportJobStore implements ReportJobStore {
     try {
       const filePath = getReportJobFilePath(jobId, this.rootDir);
       const payload = await readFile(filePath, "utf8");
-      return JSON.parse(payload) as ReportJobRecord;
+      return hydrateReportJobRecord(JSON.parse(payload));
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") {
         return null;
@@ -46,7 +48,50 @@ export class FilesystemReportJobStore implements ReportJobStore {
   }
 }
 
-export const reportJobStore = new FilesystemReportJobStore();
+function hydrateReportJobRecord(value: unknown): ReportJobRecord {
+  const job = value as ReportJobRecord & { brandId?: string };
+
+  return {
+    ...job,
+    brandId: job.brandId ?? DEFAULT_BRAND_ID,
+  } as ReportJobRecord;
+}
+
+export type ReportJobStoreDriver = "filesystem" | "xano";
+
+export function resolveReportJobStoreDriver(
+  value: string | undefined = process.env.REPORT_JOB_STORE_DRIVER,
+): ReportJobStoreDriver {
+  return value === "xano" ? "xano" : "filesystem";
+}
+
+function createXanoReportJobStore() {
+  const endpoint =
+    process.env.XANO_REPORT_JOBS_ENDPOINT ?? process.env.XANO_REPORTS_ENDPOINT;
+
+  if (!endpoint) {
+    throw new Error(
+      "XANO_REPORT_JOBS_ENDPOINT is required when REPORT_JOB_STORE_DRIVER=xano.",
+    );
+  }
+
+  return new XanoReportJobStore({
+    apiKey: process.env.XANO_API_KEY,
+    endpoint,
+  });
+}
+
+export function createReportJobStore(
+  driver: ReportJobStoreDriver = resolveReportJobStoreDriver(),
+): ReportJobStore {
+  if (driver === "xano") {
+    return createXanoReportJobStore();
+  }
+
+  return new FilesystemReportJobStore();
+}
+
+export const reportJobStore = createReportJobStore();
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -82,6 +127,7 @@ export function isCompletePcfReportJob(
 
   if (
     typeof job.jobId !== "string" ||
+    typeof job.brandId !== "string" ||
     typeof job.createdAt !== "string" ||
     !isRecord(upload) ||
     typeof upload.fileName !== "string" ||

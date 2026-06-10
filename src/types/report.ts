@@ -46,7 +46,11 @@ export interface ReportPreviewModel {
   branding: {
     clientName: string;
     logoSrc: string;
+    providerName: string;
+    providerLogoSrc: string;
     accentColor: string;
+    panelColor: string;
+    textColor: string;
   };
   document: {
     title: string;

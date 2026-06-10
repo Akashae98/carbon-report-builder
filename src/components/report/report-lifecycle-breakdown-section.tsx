@@ -37,7 +37,10 @@ export function ReportLifecycleBreakdownSection({
       <div className="report-lifecycle-grid grid gap-5 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
         <div className="space-y-4">
           <div className="report-chart-panel bg-white p-3 sm:p-4">
-            <PrintStageBreakdownChart items={preview.lifecycle.items} />
+            <PrintStageBreakdownChart
+              accentColor={preview.branding.accentColor}
+              items={preview.lifecycle.items}
+            />
           </div>
           <p className="report-lifecycle-reading mb-6 border-l-2 border-[var(--report-accent)] pl-4 text-sm leading-6 text-black/68">
             {buildLifecycleReading(preview.lifecycle.items)}

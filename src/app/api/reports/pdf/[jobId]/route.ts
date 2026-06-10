@@ -33,7 +33,7 @@ export async function GET(request: Request, { params }: PdfRouteContext) {
 
   const pdfBody = new ArrayBuffer(pdf.byteLength);
   new Uint8Array(pdfBody).set(pdf);
-  const fileName = buildReportPdfFileName(job.jobId);
+  const fileName = buildReportPdfFileName(job.jobId, job.brandId);
 
   return new Response(pdfBody, {
     headers: {

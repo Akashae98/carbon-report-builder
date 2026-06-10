@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { DEFAULT_BRAND_ID } from "@/lib/branding";
 import { buildPcfDerivedMetrics, buildPcfNormalizedDataset } from "@/lib/pcf/normalization";
 import { buildPcfReportDefinition } from "@/lib/pcf/report-definition";
 import { parseAndValidatePcfCsv } from "@/lib/pcf/schema";
@@ -23,6 +24,7 @@ describe("report job serialization", () => {
 
     const job: PcfReportJobRecord = {
       jobId: "serialize-me",
+      brandId: DEFAULT_BRAND_ID,
       reportType: "pcf",
       status: "draft",
       createdAt: "2026-06-08T00:00:00.000Z",
