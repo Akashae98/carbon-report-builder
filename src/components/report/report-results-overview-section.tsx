@@ -13,6 +13,7 @@ export function ReportResultsOverviewSection({
   return (
     <ReportSection
       id="results-overview"
+      sectionNumber="3"
       eyebrow="Resumen de resultados"
       title="Síntesis ejecutiva"
       description="Principales magnitudes de la información PCF incluida en el informe."

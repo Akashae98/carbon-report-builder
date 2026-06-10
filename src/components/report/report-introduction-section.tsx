@@ -13,6 +13,7 @@ export function ReportIntroductionSection({
   return (
     <ReportSection
       id="introduction"
+      sectionNumber="1"
       eyebrow="Introducción"
       title="Contexto del análisis"
       description="Alcance del informe y propósito de la información presentada."

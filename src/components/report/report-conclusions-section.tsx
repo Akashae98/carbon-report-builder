@@ -10,17 +10,23 @@ interface ReportConclusionsSectionProps {
 export function ReportConclusionsSection({
   preview,
 }: ReportConclusionsSectionProps) {
+  const topProduct = preview.ranking.items[0]?.productName;
+
   return (
     <ReportSection
       id="conclusions"
+      sectionNumber="7"
       eyebrow="Conclusiones"
       title="Conclusiones"
       description="Síntesis final de los principales resultados incluidos en el informe."
     >
       <ReportNarrativeBlock
         paragraphs={[
-          preview.narratives.conclusions,
-          `En conjunto, la información presentada suma ${preview.summary.totalEmissionsLabel} y proporciona una visión clara de los productos y etapas con mayor contribución dentro del conjunto evaluado.`,
+          `La muestra analizada presenta una mayor contribución de emisiones en la etapa de ${preview.summary.topContributorStageLabel}.`,
+          topProduct
+            ? `Entre los productos incluidos, ${topProduct} registra el mayor volumen agregado de emisiones.`
+            : "Entre los productos incluidos, el ranking permite identificar los mayores volúmenes agregados de emisiones.",
+          `Estos resultados permiten identificar de forma inmediata los principales focos de contribución dentro del conjunto analizado, que suma ${preview.summary.totalEmissionsLabel}.`,
         ]}
       />
     </ReportSection>
