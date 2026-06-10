@@ -50,96 +50,171 @@ a {
   background: linear-gradient(180deg, #ffffff 0%, #fefeff 100%);
 }
 
-.emission-field {
+.preview-emission-field {
   overflow: visible;
-  animation: emissionFieldFloat 12s cubic-bezier(0.45, 0, 0.55, 1) infinite
-    alternate;
-}
-
-.emission-origin-shell {
+  animation: previewEmissionDrift 20s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  transform-origin: 58% 54%;
   -webkit-mask-image: linear-gradient(
     to bottom,
     #000 0%,
-    #000 62%,
-    rgba(0, 0, 0, 0.78) 75%,
-    transparent 100%
+    #000 40%,
+    rgba(0, 0, 0, 0.82) 52%,
+    rgba(0, 0, 0, 0.38) 64%,
+    transparent 78%
   );
   mask-image: linear-gradient(
     to bottom,
     #000 0%,
-    #000 62%,
-    rgba(0, 0, 0, 0.78) 75%,
-    transparent 100%
+    #000 40%,
+    rgba(0, 0, 0, 0.82) 52%,
+    rgba(0, 0, 0, 0.38) 64%,
+    transparent 78%
   );
 }
 
-.emission-wave {
-  animation: emissionWaveGlow 9s ease-in-out infinite alternate;
+.preview-emission-band {
+  --preview-band-x: 12px;
+  --preview-band-y: -10px;
+  --preview-band-scale: 1.01;
+  animation: previewEmissionBandDrift 16s cubic-bezier(0.45, 0, 0.55, 1)
+    infinite;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
-.emission-wave--coral {
-  animation-duration: 9s;
+.preview-emission-band--peach {
+  --preview-band-x: 9px;
+  --preview-band-y: -8px;
+  animation-delay: -4s;
+  animation-duration: 19s;
 }
 
-.emission-wave--pink {
-  animation-duration: 12s;
-  animation-direction: alternate-reverse;
+.preview-emission-band--coral {
+  --preview-band-x: 14px;
+  --preview-band-y: -12px;
+  --preview-band-scale: 1.012;
+  animation-delay: -9s;
+  animation-duration: 16s;
 }
 
-.emission-wave--violet {
-  animation-duration: 15s;
-  animation-direction: alternate-reverse;
+.preview-emission-band--pink {
+  --preview-band-x: 18px;
+  --preview-band-y: -16px;
+  --preview-band-scale: 1.014;
+  animation-delay: -14s;
+  animation-duration: 20s;
 }
 
-.emission-wave--deep {
-  animation-duration: 18s;
+.preview-emission-band--violet {
+  --preview-band-x: 22px;
+  --preview-band-y: -19px;
+  --preview-band-scale: 1.016;
+  animation-delay: -18s;
+  animation-duration: 23s;
 }
 
-.emission-upper-details {
+.preview-emission-band--deep {
+  --preview-band-x: 26px;
+  --preview-band-y: -22px;
+  --preview-band-scale: 1.018;
+  animation-delay: -22s;
+  animation-duration: 26s;
+}
+
+.preview-emission-highlight {
+  opacity: 0.42;
+  animation: previewEmissionHighlight 14s ease-in-out -7s infinite;
+}
+
+.preview-emission-lines {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.3);
   stroke-linecap: round;
-  stroke-width: 1.15;
-  animation: emissionDetailsDrift 9s cubic-bezier(0.45, 0, 0.55, 1) infinite
-    alternate;
+  stroke-linejoin: round;
 }
 
-.emission-upper-details circle {
-  fill: rgba(255, 255, 255, 0.62);
-  stroke: none;
+.preview-emission-lines--base {
+  animation: previewEmissionLineDrift 22s ease-in-out -7s infinite;
+  filter: blur(0.2px);
+  opacity: 0.14;
+  stroke: rgba(255, 255, 255, 0.72);
+  stroke-width: 0.9;
 }
 
-@keyframes emissionFieldFloat {
-  0% {
+@media (min-width: 768px) and (max-width: 1279px) {
+  .preview-emission-field {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 0.58) 2.5%,
+      #000 6%,
+      #000 40%,
+      rgba(0, 0, 0, 0.82) 52%,
+      rgba(0, 0, 0, 0.38) 64%,
+      transparent 78%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 0.58) 2.5%,
+      #000 6%,
+      #000 40%,
+      rgba(0, 0, 0, 0.82) 52%,
+      rgba(0, 0, 0, 0.38) 64%,
+      transparent 78%
+    );
+  }
+}
+
+@keyframes previewEmissionDrift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(13px, -15px, 0) scale(1.01);
+  }
+}
+
+@keyframes previewEmissionBandDrift {
+  0%,
+  100% {
+    opacity: 0.88;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate3d(
+        var(--preview-band-x),
+        var(--preview-band-y),
+        0
+      )
+      scale(var(--preview-band-scale));
+  }
+}
+
+@keyframes previewEmissionHighlight {
+  0%,
+  100% {
+    opacity: 0.32;
     transform: translate3d(0, 0, 0);
   }
 
   50% {
-    transform: translate3d(8px, -10px, 0) rotate(-0.12deg);
+    opacity: 0.54;
+    transform: translate3d(13px, -12px, 0);
   }
+}
 
+@keyframes previewEmissionLineDrift {
+  0%,
   100% {
-    transform: translate3d(18px, -17px, 0) rotate(0.16deg);
-  }
-}
-
-@keyframes emissionWaveGlow {
-  from {
-    opacity: 0.78;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes emissionDetailsDrift {
-  from {
     transform: translate3d(0, 0, 0);
   }
 
-  to {
-    transform: translate3d(24px, -14px, 0);
+  50% {
+    transform: translate3d(5px, -4px, 0);
   }
 }
 
@@ -208,9 +283,10 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .emission-field,
-  .emission-wave,
-  .emission-upper-details {
+  .preview-emission-field,
+  .preview-emission-band,
+  .preview-emission-highlight,
+  .preview-emission-lines {
     animation: none !important;
   }
 }

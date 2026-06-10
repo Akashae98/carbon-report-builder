@@ -1,13 +1,19 @@
+const emissionFlowPaths = [
+  "M570 720C560 675 590 642 635 615C705 574 680 525 750 485C825 442 792 380 870 332C952 280 920 208 1005 148C1075 98 1160 88 1250 55C1380 8 1510 -82 1690 -205",
+  "M645 750C620 700 650 662 700 632C770 590 748 548 815 506C890 458 865 402 930 350C1005 292 985 226 1055 172C1120 120 1205 108 1295 70C1430 14 1560 -76 1730 -205",
+  "M730 775C700 730 725 690 775 658C845 612 828 574 888 530C955 480 940 430 1000 380C1068 320 1058 258 1120 198C1178 142 1260 124 1345 82C1475 18 1610 -70 1770 -205",
+];
+
 export function BackgroundEmissions() {
   return (
     <div
       aria-hidden="true"
-      className="emission-origin-shell pointer-events-none absolute -right-[29rem] -top-[25rem] z-0 hidden h-[46rem] w-[86rem] overflow-visible opacity-90 md:block"
+      className="preview-emission-origin pointer-events-none absolute -right-[60rem] -top-[23rem] z-0 hidden h-[53rem] w-[112rem] overflow-visible opacity-75 md:block"
     >
       <svg
-        viewBox="0 0 1200 700"
-        className="emission-field h-full w-full"
-        preserveAspectRatio="xMidYMid meet"
+        viewBox="0 0 2300 900"
+        className="preview-emission-field h-full w-full"
+        preserveAspectRatio="xMidYMin slice"
       >
         <defs>
           <linearGradient id="emission-base" x1="0" y1="1" x2="1" y2="0">
@@ -38,47 +44,45 @@ export function BackgroundEmissions() {
           </linearGradient>
         </defs>
 
-        <g className="emission-upper-stream" transform="translate(-110 82)">
+        <g transform="translate(-20 -71)">
           <path
-            d="M510 760C500 700 520 650 585 620C670 580 625 515 710 475C800 432 750 350 845 305C945 258 890 165 1000 105C1085 58 1105 -10 1140 -90H1320V780H510Z"
+            className="preview-emission-band preview-emission-band--peach"
+            d="M520 770C500 705 530 650 595 618C680 576 642 515 720 472C810 423 770 350 858 300C958 244 910 160 1012 98C1100 44 1195 55 1290 24C1420 -22 1545 -108 1720 -225H2600V990H520Z"
             fill="url(#emission-base)"
           />
 
           <path
-            className="emission-wave emission-wave--coral"
-            d="M575 770C560 710 585 665 645 635C725 595 685 535 765 495C850 452 810 378 895 330C985 278 945 190 1035 130C1105 82 1135 8 1165 -90H1320V780H575Z"
+            className="preview-emission-band preview-emission-band--coral"
+            d="M588 780C566 716 595 666 654 633C735 588 700 535 778 492C860 446 825 378 908 326C998 270 962 188 1048 124C1120 72 1210 72 1305 38C1440 -10 1570 -100 1750 -225H2600V990H588Z"
             fill="url(#emission-coral)"
           />
           <path
-            className="emission-wave emission-wave--pink"
-            d="M650 780C625 725 655 680 710 650C785 608 755 555 825 515C905 470 875 402 945 355C1025 300 1000 218 1070 158C1125 110 1160 28 1188 -90H1320V790H650Z"
+            className="preview-emission-band preview-emission-band--pink"
+            d="M664 790C634 730 662 682 718 648C795 602 768 554 838 512C918 464 892 400 958 350C1038 290 1015 214 1084 152C1145 100 1230 94 1322 56C1455 2 1590 -94 1780 -225H2600V1000H664Z"
             fill="url(#emission-pink)"
           />
           <path
-            className="emission-wave emission-wave--violet"
-            d="M735 790C700 742 730 698 780 668C850 625 828 578 890 538C960 492 940 430 1000 382C1070 325 1055 250 1110 190C1155 140 1180 52 1208 -90H1320V800H735Z"
+            className="preview-emission-band preview-emission-band--violet"
+            d="M748 800C712 746 740 700 790 666C862 618 842 576 902 534C974 484 954 426 1014 376C1084 316 1070 244 1124 184C1175 132 1255 116 1340 76C1470 14 1615 -88 1810 -225H2600V1010H748Z"
             fill="url(#emission-violet)"
           />
           <path
-            className="emission-wave emission-wave--deep"
-            d="M825 800C780 758 810 718 855 688C920 645 905 602 960 562C1025 514 1015 458 1065 410C1125 352 1118 282 1158 220C1192 168 1205 75 1228 -90H1320V810H825Z"
+            className="preview-emission-band preview-emission-band--deep"
+            d="M838 810C792 762 820 720 866 686C932 638 920 600 974 558C1040 506 1030 454 1080 404C1140 344 1134 276 1172 214C1212 160 1285 134 1360 94C1490 24 1640 -82 1840 -225H2600V1020H838Z"
             fill="#533b82"
             fillOpacity="0.25"
           />
 
           <path
-            d="M545 755C535 700 560 660 620 630C700 590 660 528 742 487C828 444 786 366 878 320C972 272 925 180 1025 118L1048 105C950 185 995 278 900 335C812 388 850 462 770 505C692 548 735 605 652 648C595 678 575 716 585 755Z"
+            className="preview-emission-highlight"
+            d="M558 765C542 704 568 660 628 628C710 584 674 526 754 484C840 438 800 364 890 316C984 264 940 176 1038 112L1062 98C966 180 1008 270 912 330C824 384 864 458 782 502C704 544 748 602 664 646C606 676 590 718 598 765Z"
             fill="url(#emission-shine)"
           />
 
-          <g className="emission-upper-details">
-            <path d="M548 675C625 622 670 585 690 530C712 468 765 438 805 398C855 348 842 292 902 247C968 198 962 138 1028 82C1092 28 1185 -4 1325 -24" />
-            <path d="M620 705C690 654 735 615 755 565C778 510 825 477 865 438C912 392 908 337 958 292C1015 240 1012 178 1072 116C1132 54 1218 18 1335 2" />
-            <path d="M705 730C765 682 810 642 830 595C852 545 895 512 932 475C975 432 978 380 1020 338C1068 290 1072 225 1122 158C1172 92 1245 50 1340 30" />
-            <circle cx="690" cy="530" r="4" />
-            <circle cx="958" cy="292" r="3.5" />
-            <circle cx="1122" cy="158" r="4" />
-            <circle cx="1245" cy="50" r="3" />
+          <g className="preview-emission-lines preview-emission-lines--base">
+            {emissionFlowPaths.map((path) => (
+              <path key={path} d={path} />
+            ))}
           </g>
         </g>
       </svg>
