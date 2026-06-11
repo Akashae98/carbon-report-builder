@@ -110,8 +110,8 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
       </div>
 
       <div className="min-w-0 rounded-[0.95rem] bg-[#fcfbfe] p-3 ring-1 ring-[#eee8f5] sm:rounded-[1.1rem] sm:p-4 md:p-2.5">
-        <div className="space-y-3 md:hidden">
-          <div className="rounded-[0.9rem] bg-white p-2.5">
+        <div className="space-y-3 sm:hidden">
+          <div className="mx-auto max-w-[28rem] rounded-[0.9rem] bg-white p-2.5">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[0.85rem] border border-black/6 bg-white px-4 py-4 shadow-[0_12px_26px_rgba(49,32,77,0.06)]">
               <div
                 className="h-1.5 w-12 rounded-full"
@@ -123,17 +123,17 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
                   alt={brand.name}
                   width={118}
                   height={34}
-                  className="max-h-8 w-auto object-contain object-left"
+                  className="max-h-8 w-auto object-contain object-left min-[480px]:max-h-9"
                 />
               </div>
               <h3
-                className="mt-6 max-w-[10.5rem] text-[1.12rem] font-semibold leading-[1.04] tracking-[-0.05em]"
+                className="mt-6 max-w-[10.5rem] text-[1.12rem] font-semibold leading-[1.04] tracking-[-0.05em] min-[480px]:max-w-[11.5rem] min-[480px]:text-[1.25rem]"
                 style={{ color: brand.textColor }}
               >
                 Informe de huella de carbono
               </h3>
               <p
-                className="mt-4 text-[0.62rem] font-semibold uppercase tracking-[0.2em]"
+                className="mt-4 text-[0.62rem] font-semibold uppercase tracking-[0.2em] min-[480px]:text-[0.68rem]"
                 style={{ color: brand.primaryColor }}
               >
                 Evaluación PCF
@@ -144,12 +144,12 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
                 style={{ backgroundColor: brand.secondaryColor }}
               >
                 <p
-                  className="text-[0.78rem] font-semibold"
+                  className="text-[0.78rem] font-semibold min-[480px]:text-[0.85rem]"
                   style={{ color: brand.textColor }}
                 >
                   {brand.name}
                 </p>
-                <p className="mt-1 text-[0.74rem] text-black/60">
+                <p className="mt-1 text-[0.74rem] text-black/60 min-[480px]:text-[0.8rem]">
                   Junio de 2026
                 </p>
               </div>
@@ -178,7 +178,7 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
           </div>
         </div>
 
-        <div className="hidden min-w-0 overflow-hidden rounded-[1rem] bg-white ring-1 ring-black/5 md:grid md:grid-cols-[minmax(0,1fr)_minmax(10.5rem,0.4fr)] md:items-stretch lg:grid-cols-[minmax(0,1fr)_minmax(11rem,0.38fr)]">
+        <div className="hidden min-w-0 overflow-hidden rounded-[1rem] bg-white ring-1 ring-black/5 sm:grid sm:grid-cols-[minmax(0,1fr)_minmax(10.5rem,0.4fr)] sm:items-stretch lg:grid-cols-[minmax(0,1fr)_minmax(11rem,0.38fr)]">
           <div className="min-w-0 p-3 sm:p-4">
             <ReportCoverMock selectedBrandId={selectedBrandId} />
           </div>
