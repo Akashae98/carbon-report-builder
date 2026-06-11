@@ -11,12 +11,29 @@ interface GenerateReportPdfOptions {
 export type PdfBrowserDriver = "local" | "vercel";
 
 export function resolveReportBaseUrl(requestOrigin?: string) {
+  if (process.env.VERCEL_ENV === "preview" && requestOrigin) {
+    return requestOrigin.replace(/\/$/, "");
+  }
+
   return (
     process.env.APP_URL ??
     process.env.NEXT_PUBLIC_APP_URL ??
     requestOrigin ??
     "http://localhost:3000"
   ).replace(/\/$/, "");
+}
+
+export function resolvePdfNavigationHeaders(
+  bypassSecret: string | undefined = process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
+) {
+  if (!bypassSecret) {
+    return undefined;
+  }
+
+  return {
+    "x-vercel-protection-bypass": bypassSecret,
+    "x-vercel-set-bypass-cookie": "true",
+  };
 }
 
 export function resolvePdfBrowserDriver(
@@ -55,11 +72,25 @@ export async function generateReportPdf({
   try {
     const page = await browser.newPage();
     await page.emulateMediaType("print");
-    await page.goto(reportUrl.toString(), {
+    const navigationHeaders = resolvePdfNavigationHeaders();
+
+    if (navigationHeaders) {
+      await page.setExtraHTTPHeaders(navigationHeaders);
+    }
+
+    const response = await page.goto(reportUrl.toString(), {
       waitUntil: "networkidle0",
       timeout: 60_000,
     });
-    await waitForReportAssets(page);
+    const status = response?.status();
+
+    if (status && (status < 200 || status >= 400)) {
+      throw new Error(
+        `Report preview request failed with status ${status} at ${response?.url() ?? page.url()}.`,
+      );
+    }
+
+    await waitForReportAssets(page, status);
 
     return await page.pdf({
       format: "A4",
@@ -71,7 +102,21 @@ export async function generateReportPdf({
   }
 }
 
-async function waitForReportAssets(page: BrowserPageAdapter) {
+async function waitForReportAssets(
+  page: BrowserPageAdapter,
+  status: number | undefined,
+) {
+  try {
+    await page.waitForSelector(".report-page .report-sheet", {
+      timeout: 15_000,
+    });
+  } catch {
+    const title = await page.title();
+    throw new Error(
+      `Report preview did not render (status=${status ?? "unknown"}, url=${page.url()}, title=${JSON.stringify(title)}).`,
+    );
+  }
+
   await page.evaluate(async () => {
     await document.fonts.ready;
 
@@ -89,6 +134,4 @@ async function waitForReportAssets(page: BrowserPageAdapter) {
       }),
     );
   });
-
-  await page.waitForSelector(".report-page .report-sheet", { timeout: 15_000 });
 }
