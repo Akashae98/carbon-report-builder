@@ -10,6 +10,10 @@ import {
 } from "react";
 
 import { brandOptions, type BrandId } from "@/lib/branding";
+import {
+  MAX_REPORT_UPLOAD_SIZE_LABEL,
+  isWithinReportUploadSizeLimit,
+} from "@/lib/uploads/report-upload-limits";
 
 type StandardChipStatus = "active" | "soon";
 
@@ -56,8 +60,15 @@ export function isCsvFile(file: UploadFileCandidate) {
   );
 }
 
-export function isValidCsvUpload(file: UploadFileCandidate | null) {
-  return file !== null && file.size > 0 && isCsvFile(file);
+export function isValidCsvUpload<T extends UploadFileCandidate>(
+  file: T | null,
+): file is T {
+  return (
+    file !== null &&
+    file.size > 0 &&
+    isWithinReportUploadSizeLimit(file.size) &&
+    isCsvFile(file)
+  );
 }
 
 interface UploadPanelProps {
@@ -105,6 +116,15 @@ export function UploadPanel({
       return;
     }
 
+    if (!isWithinReportUploadSizeLimit(file.size)) {
+      setSelectedFile(null);
+      setErrors([
+        `El archivo supera el tamaño máximo permitido de ${MAX_REPORT_UPLOAD_SIZE_LABEL}.`,
+      ]);
+      resetFileInput();
+      return;
+    }
+
     setSelectedFile(file);
     setErrors([]);
     resetFileInput();
@@ -138,7 +158,7 @@ export function UploadPanel({
     event.preventDefault();
     setErrors([]);
 
-    if (!selectedFile || selectedFile.size === 0 || !isCsvFile(selectedFile)) {
+    if (!isValidCsvUpload(selectedFile)) {
       setErrors(["Selecciona un archivo CSV para generar la vista previa."]);
       return;
     }

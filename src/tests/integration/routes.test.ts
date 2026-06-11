@@ -9,20 +9,24 @@ vi.mock("@/lib/reporting/pdf", () => ({
   buildReportPdfFileName: (jobId: string, brandId = "relats") =>
     `${brandId}-pcf-report-${jobId}.pdf`,
   generateReportPdf: vi.fn(async () => new Uint8Array([37, 80, 68, 70])),
+  resolvePdfBrowserDriver: (
+    value: string | undefined = process.env.PDF_BROWSER_DRIVER,
+  ) => (value === "vercel" ? "vercel" : "local"),
 }));
 
 import { DEFAULT_BRAND_ID } from "@/lib/branding";
 import { reportJobStore } from "@/lib/jobs/report-job-store";
+import { MAX_REPORT_UPLOAD_SIZE_BYTES } from "@/lib/uploads/report-upload-limits";
 import { GET as getPdfRoute } from "@/app/api/reports/pdf/[jobId]/route";
 import { GET as getReportPdfRedirectRoute } from "@/app/reports/pdf/[jobId]/route";
 import { POST as postUploadRoute } from "@/app/api/reports/upload/route";
+import ReportPreviewError from "@/app/reports/[jobId]/error";
 import reportPage from "@/app/reports/[jobId]/page";
 import { generateReportPdf } from "@/lib/reporting/pdf";
 import { readSamplePcfCsv } from "@/tests/helpers/sample-pcf";
 import type { ReportJobRecord } from "@/types";
 
 const createdJobIds: string[] = [];
-const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024;
 
 function createIncompletePcfJob(jobId: string): ReportJobRecord {
   return {
@@ -51,6 +55,8 @@ function createIncompletePcfJob(jobId: string): ReportJobRecord {
 afterEach(async () => {
   await Promise.all(createdJobIds.map((jobId) => reportJobStore.remove(jobId)));
   createdJobIds.length = 0;
+  vi.unstubAllEnvs();
+  vi.restoreAllMocks();
   vi.clearAllMocks();
 });
 
@@ -174,9 +180,13 @@ describe("route scaffolding", () => {
     const formData = new FormData();
     formData.set(
       "file",
-      new File([new Uint8Array(MAX_UPLOAD_SIZE_BYTES + 1)], "too-large.csv", {
-        type: "text/csv",
-      }),
+      new File(
+        [new Uint8Array(MAX_REPORT_UPLOAD_SIZE_BYTES + 1)],
+        "too-large.csv",
+        {
+          type: "text/csv",
+        },
+      ),
     );
 
     const request = new Request("http://localhost/api/reports/upload", {
@@ -187,8 +197,63 @@ describe("route scaffolding", () => {
     const response = await postUploadRoute(request);
     const payload = (await response.json()) as { error: string; details: string[] };
 
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(413);
     expect(payload.error).toBe("El CSV supera el tamaño máximo permitido.");
+    expect(payload.details[0]).toContain("4 MB");
+  });
+
+  it("returns a sanitized 503 when report persistence fails", async () => {
+    const persistenceError = new Error(
+      "Xano write failed with status 503 at https://secret.example.",
+    );
+    vi.spyOn(reportJobStore, "write").mockRejectedValueOnce(persistenceError);
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    const formData = new FormData();
+    formData.set(
+      "file",
+      new File([readSamplePcfCsv()], "sample_pcf.csv", { type: "text/csv" }),
+    );
+
+    const response = await postUploadRoute(
+      new Request("http://localhost/api/reports/upload", {
+        method: "POST",
+        body: formData,
+      }),
+    );
+    const payload = (await response.json()) as { error: string };
+
+    expect(response.status).toBe(503);
+    expect(payload.error).toBe(
+      "No se pudo guardar el informe. Inténtalo de nuevo en unos minutos.",
+    );
+    expect(JSON.stringify(payload)).not.toContain("secret.example");
+    expect(consoleError).toHaveBeenCalledWith(
+      "Report job persistence failed.",
+      "Error",
+    );
+    expect(JSON.stringify(consoleError.mock.calls)).not.toContain(
+      "secret.example",
+    );
+  });
+
+  it("returns a controlled 503 for the hosted PDF driver", async () => {
+    vi.stubEnv("PDF_BROWSER_DRIVER", "vercel");
+    const readSpy = vi.spyOn(reportJobStore, "read");
+
+    const response = await getPdfRoute(
+      new Request("https://app.example/api/reports/pdf/hosted-job"),
+      {
+        params: Promise.resolve({ jobId: "hosted-job" }),
+      },
+    );
+    const payload = (await response.json()) as { error: string };
+
+    expect(response.status).toBe(503);
+    expect(payload.error).toContain("todavía no está disponible");
+    expect(readSpy).not.toHaveBeenCalled();
+    expect(generateReportPdf).not.toHaveBeenCalled();
   });
 
   it("returns 404 for missing PDF jobs", async () => {
@@ -364,6 +429,28 @@ describe("route scaffolding", () => {
         params: Promise.resolve({ jobId }),
       }),
     ).rejects.toThrow();
+  });
+
+  it("keeps preview read failures recoverable without exposing details", async () => {
+    const readError = new Error("Xano endpoint https://secret.example failed.");
+    vi.spyOn(reportJobStore, "read").mockRejectedValueOnce(readError);
+
+    await expect(
+      reportPage({
+        params: Promise.resolve({ jobId: "temporarily-unavailable" }),
+      }),
+    ).rejects.toThrow(readError);
+
+    const markup = renderToStaticMarkup(
+      ReportPreviewError({
+        error: readError,
+        reset: () => undefined,
+      }),
+    );
+
+    expect(markup).toContain("No se pudo recuperar el informe");
+    expect(markup).toContain("Reintentar");
+    expect(markup).not.toContain("secret.example");
   });
 
   it("keeps the runtime upload path free from fixture imports", () => {
