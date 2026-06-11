@@ -229,6 +229,17 @@ a {
   color: var(--report-text);
 }
 
+.report-shell {
+  max-width: 52rem;
+}
+
+.report-document-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-width: 0;
+}
+
 .report-sheet {
   break-inside: avoid;
   page-break-inside: avoid;
@@ -240,12 +251,13 @@ a {
 
 .report-cover-accent {
   background: var(--report-accent);
-  bottom: 0;
-  left: auto;
+  bottom: auto;
+  height: 0.45rem;
+  left: 0;
   position: absolute;
   right: 0;
   top: 0;
-  width: 0.45rem;
+  width: auto;
   z-index: 1;
 }
 
@@ -262,6 +274,60 @@ a {
   .report-kpi-grid article:nth-child(odd):last-child {
     grid-column: auto;
   }
+
+  .report-table-wrapper table {
+    table-layout: fixed;
+  }
+
+  .report-table-wrapper th {
+    font-size: 0.56rem;
+    letter-spacing: 0.035em;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+    padding: 0.65rem 0.35rem;
+  }
+
+  .report-table-wrapper td {
+    font-size: 0.68rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    padding: 0.65rem 0.35rem;
+  }
+
+  #lifecycle-breakdown th:nth-child(1),
+  #lifecycle-breakdown td:nth-child(1) {
+    width: 36%;
+  }
+
+  #lifecycle-breakdown th:nth-child(2),
+  #lifecycle-breakdown td:nth-child(2) {
+    width: 28%;
+  }
+
+  #lifecycle-breakdown th:nth-child(3),
+  #lifecycle-breakdown td:nth-child(3) {
+    width: 36%;
+  }
+
+  #top-product-ranking th:nth-child(1),
+  #top-product-ranking td:nth-child(1) {
+    width: 8%;
+  }
+
+  #top-product-ranking th:nth-child(2),
+  #top-product-ranking td:nth-child(2) {
+    width: 38%;
+  }
+
+  #top-product-ranking th:nth-child(3),
+  #top-product-ranking td:nth-child(3) {
+    width: 24%;
+  }
+
+  #top-product-ranking th:nth-child(4),
+  #top-product-ranking td:nth-child(4) {
+    width: 30%;
+  }
 }
 
 .report-cover-sheet,
@@ -275,6 +341,180 @@ a {
 
 .report-cover-sheet {
   top: 0;
+}
+
+@media screen and (min-width: 768px) {
+  .report-shell {
+    max-width: calc(210mm + 3rem);
+  }
+
+  .report-document-page {
+    aspect-ratio: 210 / 297;
+    background: var(--report-bg);
+    border-radius: 0.35rem;
+    box-shadow: 0 18px 50px rgba(28, 28, 28, 0.08);
+    gap: 4mm;
+    margin-inline: auto;
+    overflow: hidden;
+    padding: 10mm;
+    width: min(210mm, 100%);
+  }
+
+  .report-document-page > .report-sheet {
+    border-radius: 0;
+    box-shadow: none;
+    flex: 0 0 auto;
+    padding: 5mm 7mm;
+  }
+
+  .report-document-page--cover {
+    padding: 10mm;
+  }
+
+  .report-document-page--cover > .report-cover-sheet {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .report-cover-layout {
+    height: 100%;
+    padding: 14mm 13mm 11mm !important;
+    width: 100%;
+  }
+
+  .report-cover-primary img {
+    height: 12mm !important;
+  }
+
+  .report-cover-primary > div {
+    margin-top: 34mm !important;
+  }
+
+  .report-cover-primary h1 {
+    font-size: 34pt !important;
+    line-height: 1.04 !important;
+    margin-top: 5mm !important;
+    max-width: 14ch !important;
+  }
+
+  .report-cover-primary p {
+    font-size: 9.5pt !important;
+    line-height: 1.45 !important;
+    margin-top: 5mm !important;
+  }
+
+  .report-cover-metadata {
+    gap: 5mm !important;
+    margin-top: 16mm !important;
+    padding-top: 6mm !important;
+  }
+
+  .report-cover-metadata dd,
+  .report-cover-metadata dt {
+    font-size: 8pt !important;
+    line-height: 1.35 !important;
+  }
+
+  .report-cover-footer {
+    margin-top: 0 !important;
+    padding-top: 5mm !important;
+  }
+
+  .report-cover-footer p {
+    font-size: 7pt !important;
+    line-height: 1.3 !important;
+  }
+
+  .report-cover-footer img {
+    height: 11mm !important;
+  }
+
+  .report-section-header h2 {
+    font-size: 18pt !important;
+    line-height: 1.1 !important;
+    margin-top: 2.5mm !important;
+  }
+
+  .report-section-header p {
+    font-size: 8pt !important;
+    line-height: 1.3 !important;
+  }
+
+  .report-section-number {
+    padding-right: 3mm !important;
+  }
+
+  .report-section-body {
+    margin-top: 4.5mm !important;
+  }
+
+  #lifecycle-breakdown .report-section-body {
+    margin-top: 0 !important;
+  }
+
+  .report-section-body .space-y-4 {
+    font-size: 9.5pt !important;
+    line-height: 1.55 !important;
+  }
+
+  .report-section-body .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 3mm !important;
+  }
+
+  .report-kpi-grid article {
+    padding: 5mm !important;
+  }
+
+  .report-kpi-grid article p:nth-child(2) {
+    font-size: 18pt !important;
+    line-height: 1.12 !important;
+  }
+
+  .report-kpi-grid article p:last-child {
+    font-size: 9pt !important;
+    line-height: 1.45 !important;
+    margin-top: 3mm !important;
+  }
+
+  .report-chart-panel {
+    background: #ffffff;
+    border-color: transparent;
+    margin-bottom: 4mm;
+    padding: 3mm !important;
+  }
+
+  .report-lifecycle-grid {
+    display: block !important;
+  }
+
+  .report-lifecycle-reading {
+    margin-bottom: 6mm !important;
+  }
+
+  .report-chart-panel svg:first-of-type {
+    display: none;
+  }
+
+  .report-chart-panel svg:last-of-type {
+    display: block;
+  }
+
+  #recommendations,
+  #conclusions {
+    margin-top: -1mm;
+  }
+
+  #recommendations li {
+    padding-bottom: 4mm !important;
+    padding-top: 4mm !important;
+  }
+
+  #recommendations li p {
+    font-size: 9.5pt !important;
+    line-height: 1.55 !important;
+  }
 }
 
 @page {
@@ -311,8 +551,29 @@ a {
 
   .report-shell {
     max-width: none !important;
-    gap: 4mm !important;
+    gap: 0 !important;
     padding: 0 !important;
+  }
+
+  .report-document-page {
+    aspect-ratio: auto;
+    background: var(--report-bg);
+    border-radius: 0;
+    box-shadow: none;
+    break-after: page;
+    display: flex;
+    gap: 4mm;
+    height: 277mm;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    page-break-after: always;
+    width: auto;
+  }
+
+  .report-document-page:last-child {
+    break-after: auto;
+    page-break-after: auto;
   }
 
   .report-sheet {
@@ -326,13 +587,12 @@ a {
   }
 
   .report-cover-sheet {
-    break-after: page;
     display: flex;
-    height: 277mm;
+    flex: 1 1 auto;
+    height: auto;
     min-height: 0;
     overflow: hidden;
     padding: 0 !important;
-    page-break-after: always;
   }
 
   .report-cover-accent {
@@ -415,15 +675,8 @@ a {
     padding-right: 3mm !important;
   }
 
-  .report-sheet:last-child {
-    break-after: auto;
-    page-break-after: auto;
-  }
-
   #lifecycle-breakdown {
-    break-before: page;
     break-inside: avoid;
-    page-break-before: always;
     page-break-inside: avoid;
   }
 
