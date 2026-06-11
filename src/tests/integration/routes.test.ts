@@ -238,22 +238,40 @@ describe("route scaffolding", () => {
     );
   });
 
-  it("returns a controlled 503 for the hosted PDF driver", async () => {
+  it("generates PDFs through the hosted PDF driver", async () => {
     vi.stubEnv("PDF_BROWSER_DRIVER", "vercel");
-    const readSpy = vi.spyOn(reportJobStore, "read");
+    const formData = new FormData();
+    formData.set(
+      "file",
+      new File([readSamplePcfCsv()], "sample_pcf.csv", { type: "text/csv" }),
+    );
+
+    const uploadResponse = await postUploadRoute(
+      new Request("https://app.example/api/reports/upload", {
+        method: "POST",
+        body: formData,
+      }),
+    );
+    const uploadPayload = (await uploadResponse.json()) as { jobId: string };
+    createdJobIds.push(uploadPayload.jobId);
 
     const response = await getPdfRoute(
-      new Request("https://app.example/api/reports/pdf/hosted-job"),
+      new Request(
+        `https://app.example/api/reports/pdf/${uploadPayload.jobId}`,
+      ),
       {
-        params: Promise.resolve({ jobId: "hosted-job" }),
+        params: Promise.resolve({ jobId: uploadPayload.jobId }),
       },
     );
-    const payload = (await response.json()) as { error: string };
+    const bytes = new Uint8Array(await response.arrayBuffer());
 
-    expect(response.status).toBe(503);
-    expect(payload.error).toContain("todavía no está disponible");
-    expect(readSpy).not.toHaveBeenCalled();
-    expect(generateReportPdf).not.toHaveBeenCalled();
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Type")).toBe("application/pdf");
+    expect(bytes).toEqual(new Uint8Array([37, 80, 68, 70]));
+    expect(generateReportPdf).toHaveBeenCalledWith({
+      jobId: uploadPayload.jobId,
+      requestOrigin: "https://app.example",
+    });
   });
 
   it("returns 404 for missing PDF jobs", async () => {

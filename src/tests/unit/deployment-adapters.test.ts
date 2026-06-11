@@ -74,6 +74,46 @@ describe("deployment adapters", () => {
     await expect(createPdfBrowser()).resolves.toBe(fakeBrowser);
   });
 
+  it("launches the Vercel adapter with the supported headless shell configuration", async () => {
+    const fakeBrowser = {
+      close: vi.fn(async () => undefined),
+      newPage: vi.fn(),
+    };
+    const defaultArgs = vi.fn(() => ["--serverless-arg"]);
+    const launch = vi.fn(async () => fakeBrowser);
+    const executablePath = vi.fn(async () => "/tmp/chromium");
+
+    vi.doUnmock("@/lib/reporting/pdf/vercel-browser");
+    vi.doMock("@sparticuz/chromium", () => ({
+      default: {
+        args: ["--chromium-arg"],
+        executablePath,
+      },
+    }));
+    vi.doMock("puppeteer-core", () => ({
+      default: {
+        defaultArgs,
+        launch,
+      },
+    }));
+
+    const { launchVercelPdfBrowser } = await import(
+      "@/lib/reporting/pdf/vercel-browser"
+    );
+
+    await expect(launchVercelPdfBrowser()).resolves.toBe(fakeBrowser);
+    expect(executablePath).toHaveBeenCalledOnce();
+    expect(defaultArgs).toHaveBeenCalledWith({
+      args: ["--chromium-arg"],
+      headless: "shell",
+    });
+    expect(launch).toHaveBeenCalledWith({
+      args: ["--serverless-arg"],
+      executablePath: "/tmp/chromium",
+      headless: "shell",
+    });
+  });
+
   it("resolves the report base URL with env precedence", () => {
     vi.stubEnv("APP_URL", "https://app.example.com/");
     vi.stubEnv("NEXT_PUBLIC_APP_URL", "https://public.example.com/");

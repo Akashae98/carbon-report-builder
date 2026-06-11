@@ -2,16 +2,18 @@ import type { BrowserAdapter } from "@/lib/reporting/pdf/types";
 
 export async function launchVercelPdfBrowser(): Promise<BrowserAdapter> {
   const [{ default: chromium }, puppeteerCore] = await Promise.all([
-    import("@sparticuz/chromium-min"),
+    import("@sparticuz/chromium"),
     import("puppeteer-core"),
   ]);
 
-  const executablePath =
-    process.env.CHROMIUM_EXECUTABLE_PATH ?? (await chromium.executablePath());
+  const executablePath = await chromium.executablePath();
 
   return puppeteerCore.default.launch({
-    args: chromium.args,
+    args: await puppeteerCore.default.defaultArgs({
+      args: chromium.args,
+      headless: "shell",
+    }),
     executablePath,
-    headless: true,
+    headless: "shell",
   });
 }

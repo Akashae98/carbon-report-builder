@@ -41,8 +41,9 @@ with the filesystem driver remain in `.tmp/reports`, while jobs created with the
 Xano driver remain in Xano.
 
 ## Hosted MVP Mode: Vercel + Xano
-Phase 1 hosted support covers the homepage, PCF CSV upload, Xano persistence,
-and persisted report previews. Set these environment variables in Vercel:
+Hosted support covers the homepage, PCF CSV upload, Xano persistence,
+persisted report previews, and server-side PDF generation. Set these
+environment variables in Vercel:
 
 ```bash
 REPORT_JOB_STORE_DRIVER=xano
@@ -56,7 +57,6 @@ Optional / compatibility variables:
 - `XANO_BASE_URL`: useful project reference for setup notes; the app uses the concrete `XANO_REPORT_JOBS_ENDPOINT`.
 - `XANO_REPORTS_ENDPOINT`: temporary legacy fallback if already configured.
 - `NEXT_PUBLIC_APP_URL`: not required for the hosted upload and preview flow.
-- `CHROMIUM_EXECUTABLE_PATH`: reserved for future hosted PDF validation.
 
 Do not rely on `.tmp/reports` in hosted mode. Vercel filesystem state is not durable across invocations.
 
@@ -118,16 +118,28 @@ an optional human-readable dataset label and structured period fields such as
 not be presented as chronologically comparable.
 
 ## PDF Hosting Note
-Local PDF generation remains the default and uses Puppeteer.
+Local PDF generation remains the default and uses the full Puppeteer package.
+The local browser adapter is separate from the hosted adapter.
 
-During hosted Phase 1, `PDF_BROWSER_DRIVER=vercel` intentionally disables PDF
-generation and returns a controlled `503` response. It does not launch Chromium.
+Hosted PDF generation uses `puppeteer-core@25.1.0` with
+`@sparticuz/chromium@149.0.0`. The packages are pinned to keep Puppeteer and
+Chromium aligned. The Chromium binary is included in the deployment package, so
+no remote binary pack or `CHROMIUM_EXECUTABLE_PATH` is required.
 
-Vercel PDF generation remains a separate Phase 2 validation risk. The codebase
-includes a Vercel browser adapter using `puppeteer-core` and
-`@sparticuz/chromium-min`, but its binary provisioning and version compatibility
-must be resolved and validated in a deployed environment before hosted PDF
-exports are enabled.
+For Vercel Preview deployments, `APP_URL` can be omitted so PDF generation uses
+the request origin for that deployment. Production should set `APP_URL` to the
+stable production domain. Before merging the Phase 2 branch, validate both a
+cold and warm PDF request in Vercel and inspect the function logs.
+
+Deployment validation checklist:
+- deploy the Phase 2 branch as a Vercel Preview
+- upload a PCF CSV and confirm the Xano report job
+- open the persisted report preview
+- download the PDF once cold and once warm
+- verify the `200` response, `application/pdf` content type, and branded filename
+- verify logos, charts, page count, and report layout
+- confirm the PDF is below Vercel's 4.5 MB response limit
+- confirm Vercel logs contain no Chromium, timeout, memory, or asset-loading errors
 
 PDF regeneration uses the current application renderer, branding assets, and
 layout. It recreates a report from persisted data, but it is not an archival
