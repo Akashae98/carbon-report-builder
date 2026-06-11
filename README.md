@@ -127,9 +127,17 @@ Chromium aligned. The Chromium binary is included in the deployment package, so
 no remote binary pack or `CHROMIUM_EXECUTABLE_PATH` is required.
 
 For Vercel Preview deployments, `APP_URL` can be omitted so PDF generation uses
-the request origin for that deployment. Production should set `APP_URL` to the
-stable production domain. Before merging the Phase 2 branch, validate both a
-cold and warm PDF request in Vercel and inspect the function logs.
+the request origin for that deployment. The runtime also prefers the request
+origin whenever `VERCEL_ENV=preview`, even if `APP_URL` is shared with
+Production. Production should set `APP_URL` to the stable production domain.
+
+If Preview Deployment Protection is enabled, configure **Protection Bypass for
+Automation** in the Vercel project. Vercel then provides the server-only
+`VERCEL_AUTOMATION_BYPASS_SECRET`, which the PDF browser sends as the official
+bypass header. Do not create a `NEXT_PUBLIC_` copy of this secret.
+
+Before merging the Phase 2 branch, validate both a cold and warm PDF request in
+Vercel and inspect the function logs.
 
 Deployment validation checklist:
 - deploy the Phase 2 branch as a Vercel Preview

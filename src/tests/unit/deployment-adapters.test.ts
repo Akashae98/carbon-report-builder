@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createReportJobStore, resolveReportJobStoreDriver } from "@/lib/jobs/report-job-store";
 import {
   buildReportPdfFileName,
+  resolvePdfNavigationHeaders,
   resolvePdfBrowserDriver,
   resolveReportBaseUrl,
 } from "@/lib/reporting/pdf";
@@ -119,5 +120,22 @@ describe("deployment adapters", () => {
     vi.stubEnv("NEXT_PUBLIC_APP_URL", "https://public.example.com/");
 
     expect(resolveReportBaseUrl("http://localhost:3000")).toBe("https://app.example.com");
+  });
+
+  it("uses the current deployment origin for Vercel previews", () => {
+    vi.stubEnv("VERCEL_ENV", "preview");
+    vi.stubEnv("APP_URL", "https://production.example.com");
+
+    expect(resolveReportBaseUrl("https://branch-preview.vercel.app/")).toBe(
+      "https://branch-preview.vercel.app",
+    );
+  });
+
+  it("adds Vercel automation bypass headers when a secret is available", () => {
+    expect(resolvePdfNavigationHeaders("bypass-secret")).toEqual({
+      "x-vercel-protection-bypass": "bypass-secret",
+      "x-vercel-set-bypass-cookie": "true",
+    });
+    expect(resolvePdfNavigationHeaders(undefined)).toBeUndefined();
   });
 });
