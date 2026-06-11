@@ -125,9 +125,19 @@ export function ReportPdfDownloadButton({ jobId }: ReportPdfDownloadButtonProps)
         onClick={handleDownload}
         disabled={isDownloading}
         aria-busy={isDownloading}
-        className="inline-flex items-center justify-center rounded-full bg-[var(--report-accent)] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(255,87,16,0.16)] transition hover:bg-[#e94d0d] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
+        className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--report-accent)] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(255,87,16,0.16)] transition hover:bg-[#e94d0d] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
       >
-        {isDownloading ? "Generando PDF..." : "Descargar PDF"}
+        {isDownloading ? (
+          <>
+            <span
+              aria-hidden="true"
+              className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white motion-reduce:animate-none"
+            />
+            <span>Generando PDF...</span>
+          </>
+        ) : (
+          "Descargar PDF"
+        )}
       </button>
       {error ? (
         <p role="alert" className="max-w-xs text-right text-sm text-[#9a4551]">
