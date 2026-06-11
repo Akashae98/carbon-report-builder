@@ -5,12 +5,14 @@ import { buildPcfReportDefinition } from "@/lib/pcf/report-definition";
 import { reportJobStore } from "@/lib/jobs/report-job-store";
 import { buildPcfDerivedMetrics, buildPcfNormalizedDataset } from "@/lib/pcf/normalization";
 import { getPcfValidationDetails, parseAndValidatePcfCsv } from "@/lib/pcf/schema";
+import {
+  MAX_REPORT_UPLOAD_SIZE_BYTES,
+  MAX_REPORT_UPLOAD_SIZE_LABEL,
+} from "@/lib/uploads/report-upload-limits";
 import type { PcfReportJobRecord, ReportUploadMetadata } from "@/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-export const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024;
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -46,13 +48,15 @@ export async function POST(request: Request) {
     receivedAt: new Date().toISOString(),
   };
 
-  if (file.size > MAX_UPLOAD_SIZE_BYTES) {
+  if (file.size > MAX_REPORT_UPLOAD_SIZE_BYTES) {
     return Response.json(
       {
         error: "El CSV supera el tamaño máximo permitido.",
-        details: ["El tamaño máximo permitido para esta demo es de 5 MB."],
+        details: [
+          `El tamaño máximo permitido es de ${MAX_REPORT_UPLOAD_SIZE_LABEL}.`,
+        ],
       },
-      { status: 400 },
+      { status: 413 },
     );
   }
 
@@ -92,7 +96,22 @@ export async function POST(request: Request) {
     reportDefinition,
   };
 
-  await reportJobStore.write(job);
+  try {
+    await reportJobStore.write(job);
+  } catch (error) {
+    console.error(
+      "Report job persistence failed.",
+      error instanceof Error ? error.name : "UnknownError",
+    );
+
+    return Response.json(
+      {
+        error:
+          "No se pudo guardar el informe. Inténtalo de nuevo en unos minutos.",
+      },
+      { status: 503 },
+    );
+  }
 
   return Response.json(
     {

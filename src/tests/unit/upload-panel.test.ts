@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { isCsvFile, isValidCsvUpload } from "@/components/upload/upload-panel";
+import { MAX_REPORT_UPLOAD_SIZE_BYTES } from "@/lib/uploads/report-upload-limits";
 
 function fileCandidate(
   name: string,
@@ -34,7 +35,20 @@ describe("Upload panel CSV selection", () => {
     expect(isValidCsvUpload(fileCandidate("empty.csv", 0))).toBe(false);
   });
 
-  it("allows preview generation only for non-empty CSV uploads", () => {
+  it("allows preview generation only for non-empty CSV uploads within the limit", () => {
     expect(isValidCsvUpload(fileCandidate("pcf-upload.csv", 1))).toBe(true);
+    expect(
+      isValidCsvUpload(
+        fileCandidate("pcf-upload.csv", MAX_REPORT_UPLOAD_SIZE_BYTES),
+      ),
+    ).toBe(true);
+  });
+
+  it("rejects CSV files above the hosted-safe upload limit", () => {
+    expect(
+      isValidCsvUpload(
+        fileCandidate("pcf-upload.csv", MAX_REPORT_UPLOAD_SIZE_BYTES + 1),
+      ),
+    ).toBe(false);
   });
 });

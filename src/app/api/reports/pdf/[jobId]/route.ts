@@ -1,5 +1,9 @@
 import { isCompletePcfReportJob, reportJobStore } from "@/lib/jobs/report-job-store";
-import { buildReportPdfFileName, generateReportPdf } from "@/lib/reporting/pdf";
+import {
+  buildReportPdfFileName,
+  generateReportPdf,
+  resolvePdfBrowserDriver,
+} from "@/lib/reporting/pdf";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,6 +13,16 @@ interface PdfRouteContext {
 }
 
 export async function GET(request: Request, { params }: PdfRouteContext) {
+  if (resolvePdfBrowserDriver() === "vercel") {
+    return Response.json(
+      {
+        error:
+          "La descarga PDF alojada todavía no está disponible. La vista previa del informe sigue activa.",
+      },
+      { status: 503 },
+    );
+  }
+
   const { jobId } = await params;
   const job = await reportJobStore.read(jobId);
 
