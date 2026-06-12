@@ -111,6 +111,7 @@ describe("ReportShell PCF MVP pagination", () => {
     const markup = renderShell();
 
     expect(markup.match(/data-report-page="/g)).toHaveLength(4);
+    expect(markup).toContain(preview.document.generatedAtLabel);
     expect(markup.indexOf('data-report-page="1"')).toBeLessThan(
       markup.indexOf('data-report-page="2"'),
     );

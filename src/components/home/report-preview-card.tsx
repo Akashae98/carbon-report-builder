@@ -6,17 +6,10 @@ const previewSections = [
   "Portada",
   "Introducción",
   "Metodología",
-  "Síntesis ejecutiva",
+  "Resumen de resultados",
   "Desglose del ciclo de vida",
-  "Productos con mayor huella agregada",
+  "Clasificación de productos",
   "Recomendaciones",
-  "Conclusiones",
-];
-
-const mobilePreviewSections = [
-  "Introducción",
-  "Síntesis ejecutiva",
-  "Desglose del ciclo de vida",
   "Conclusiones",
 ];
 
@@ -28,7 +21,7 @@ function ReportCoverMock({ selectedBrandId }: ReportPreviewCardProps) {
   const brand = getBrandProfile(selectedBrandId);
 
   return (
-    <div className="relative aspect-[0.72] min-h-[26rem] overflow-hidden rounded-[0.85rem] border border-black/6 bg-white px-4 py-5 pb-4 shadow-[0_14px_30px_rgba(49,32,77,0.07)] sm:px-5 md:h-[38rem] md:aspect-auto xl:h-auto xl:aspect-[0.72]">
+    <div className="relative aspect-[0.72] min-h-[28rem] overflow-hidden rounded-[0.85rem] border border-black/6 bg-white px-4 py-5 pb-[8.5rem] shadow-[0_14px_30px_rgba(49,32,77,0.07)] sm:px-5 md:h-[38rem] md:aspect-auto xl:h-auto xl:aspect-[0.72]">
       <div
         className="h-1.5 w-16 rounded-full"
         style={{ backgroundColor: brand.primaryColor }}
@@ -44,18 +37,22 @@ function ReportCoverMock({ selectedBrandId }: ReportPreviewCardProps) {
         />
       </div>
 
-      <h3
-        className="mt-8 max-w-[12.25rem] text-[1.65rem] font-semibold leading-[1.04] tracking-[-0.055em] sm:text-[1.82rem]"
-        style={{ color: brand.textColor }}
-      >
-        Informe de huella de carbono
-      </h3>
-
       <p
-        className="mt-4 text-[0.72rem] font-semibold uppercase tracking-[0.22em]"
+        className="mt-8 text-[0.68rem] font-semibold uppercase tracking-[0.18em]"
         style={{ color: brand.primaryColor }}
       >
-        Evaluación PCF
+        Informe ejecutivo
+      </p>
+
+      <h3
+        className="mt-3 max-w-[12.25rem] text-[1.65rem] font-semibold leading-[1.04] tracking-[-0.055em] sm:text-[1.82rem]"
+        style={{ color: brand.textColor }}
+      >
+        {brand.reportTitle}
+      </h3>
+
+      <p className="mt-4 max-w-[15rem] text-[0.72rem] leading-5 text-black/60">
+        {brand.reportSubtitle}
       </p>
 
       <div
@@ -68,9 +65,8 @@ function ReportCoverMock({ selectedBrandId }: ReportPreviewCardProps) {
         >
           {brand.name}
         </p>
-        <p className="mt-1 text-sm text-black/60">Junio de 2026</p>
-        <p className="mt-5 text-[0.58rem] uppercase tracking-[0.2em] text-black/42">
-          Generado por Footprint Mappa
+        <p className="mt-3 text-[0.58rem] uppercase tracking-[0.18em] text-black/42">
+          Generado por {brand.providerName}
         </p>
       </div>
 
@@ -112,7 +108,7 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
       <div className="min-w-0 rounded-[0.95rem] bg-[#fcfbfe] p-3 ring-1 ring-[#eee8f5] sm:rounded-[1.1rem] sm:p-4 md:p-2.5">
         <div className="space-y-3 sm:hidden">
           <div className="mx-auto max-w-[28rem] rounded-[0.9rem] bg-white p-2.5">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[0.85rem] border border-black/6 bg-white px-4 py-4 shadow-[0_12px_26px_rgba(49,32,77,0.06)]">
+            <div className="relative aspect-[0.66] overflow-hidden rounded-[0.85rem] border border-black/6 bg-white px-4 py-4 pb-[6.5rem] shadow-[0_12px_26px_rgba(49,32,77,0.06)]">
               <div
                 className="h-1.5 w-12 rounded-full"
                 style={{ backgroundColor: brand.primaryColor }}
@@ -126,17 +122,22 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
                   className="max-h-8 w-auto object-contain object-left min-[480px]:max-h-9"
                 />
               </div>
-              <h3
-                className="mt-6 max-w-[10.5rem] text-[1.12rem] font-semibold leading-[1.04] tracking-[-0.05em] min-[480px]:max-w-[11.5rem] min-[480px]:text-[1.25rem]"
-                style={{ color: brand.textColor }}
-              >
-                Informe de huella de carbono
-              </h3>
               <p
-                className="mt-4 text-[0.62rem] font-semibold uppercase tracking-[0.2em] min-[480px]:text-[0.68rem]"
+                className="mt-5 text-[0.55rem] font-semibold uppercase tracking-[0.16em] min-[480px]:text-[0.62rem]"
                 style={{ color: brand.primaryColor }}
               >
-                Evaluación PCF
+                Informe ejecutivo
+              </p>
+
+              <h3
+                className="mt-2.5 max-w-[11rem] text-[1.02rem] font-semibold leading-[1.04] tracking-[-0.05em] min-[480px]:text-[1.16rem]"
+                style={{ color: brand.textColor }}
+              >
+                {brand.reportTitle}
+              </h3>
+
+              <p className="mt-2.5 max-w-[12rem] text-[0.58rem] leading-4 text-black/55 min-[480px]:text-[0.64rem]">
+                {brand.reportSubtitle}
               </p>
 
               <div
@@ -149,8 +150,8 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
                 >
                   {brand.name}
                 </p>
-                <p className="mt-1 text-[0.74rem] text-black/60 min-[480px]:text-[0.8rem]">
-                  Junio de 2026
+                <p className="mt-2 text-[0.5rem] uppercase tracking-[0.14em] text-black/42 min-[480px]:text-[0.54rem]">
+                  Generado por {brand.providerName}
                 </p>
               </div>
             </div>
@@ -158,23 +159,18 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
 
           <div className="rounded-[0.9rem] bg-white p-3 ring-1 ring-black/5">
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#9a90ac]">
-              Contenido
+              Estructura del informe
             </p>
-            <div className="mt-3 divide-y divide-black/6">
-              {mobilePreviewSections.map((section, index) => (
-                <div
+            <ul className="mt-2 divide-y divide-black/6">
+              {previewSections.map((section) => (
+                <li
                   key={section}
-                  className="grid grid-cols-[0.9rem_minmax(0,1fr)] items-start gap-2 py-2.5"
+                  className="py-1.5 text-[0.76rem] font-medium leading-4 text-[#30264b]"
                 >
-                  <span className="pt-0.5 text-[0.7rem] font-medium text-[#8b819e]">
-                    {index + 1}
-                  </span>
-                  <span className="text-[0.82rem] font-medium leading-5 text-[#30264b]">
-                    {section}
-                  </span>
-                </div>
+                  {section}
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
 
@@ -185,27 +181,19 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
 
           <div className="min-w-0 border-l border-black/6 bg-white px-4 py-3.5 sm:px-4 sm:py-4">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#9a90ac]">
-              Contenido
+              Estructura del informe
             </p>
 
-            <div className="mt-4 divide-y divide-black/6">
-              {previewSections.map((section, index) => (
-                <div
+            <ul className="mt-4 divide-y divide-black/6">
+              {previewSections.map((section) => (
+                <li
                   key={section}
-                  className="grid min-w-0 grid-cols-[0.9rem_minmax(0,1fr)_0.9rem] items-start gap-3 py-2.5"
+                  className="min-w-0 py-2.5 text-[0.78rem] font-medium leading-5 text-[#30264b]"
                 >
-                  <span className="pt-0.5 text-[0.7rem] font-medium text-[#8b819e]">
-                    {index + 1}
-                  </span>
-                  <span className="min-w-0 text-[0.78rem] font-medium leading-5 text-[#30264b]">
-                    {section}
-                  </span>
-                  <span className="pt-0.5 text-right text-[0.7rem] text-[#aaa0ba]">
-                    {index + 1}
-                  </span>
-                </div>
+                  {section}
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       </div>
