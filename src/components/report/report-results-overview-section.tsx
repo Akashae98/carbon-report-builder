@@ -15,7 +15,7 @@ export function ReportResultsOverviewSection({
       id="results-overview"
       sectionNumber="3"
       eyebrow="Resumen de resultados"
-      title="Síntesis ejecutiva"
+      title="Indicadores clave"
       description="Principales magnitudes de la información PCF incluida en el informe."
     >
       <ReportKpiGrid

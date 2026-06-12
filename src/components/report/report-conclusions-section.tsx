@@ -17,7 +17,7 @@ export function ReportConclusionsSection({
       id="conclusions"
       sectionNumber="7"
       eyebrow="Conclusiones"
-      title="Conclusiones"
+      title="Conclusiones principales"
       description="Síntesis final de los principales resultados incluidos en el informe."
     >
       <ReportNarrativeBlock

@@ -112,6 +112,23 @@ describe("ReportShell PCF MVP pagination", () => {
 
     expect(markup.match(/data-report-page="/g)).toHaveLength(4);
     expect(markup).toContain(preview.document.generatedAtLabel);
+    expect(markup).toContain("Introducción");
+    expect(markup).toContain("Contexto del análisis");
+    expect(markup).toContain("Metodología");
+    expect(markup).toContain("Criterio de presentación");
+    expect(markup).toContain("Resumen de resultados");
+    expect(markup).toContain("Indicadores clave");
+    expect(markup).toContain("Desglose del ciclo de vida");
+    expect(markup).toContain("Distribución por etapa del ciclo de vida");
+    expect(markup).toContain("Clasificación de productos");
+    expect(markup).toContain("Productos con mayor huella agregada");
+    expect(markup).toContain("Recomendaciones");
+    expect(markup).toContain("Líneas de acción prioritarias");
+    expect(markup).toContain("Conclusiones");
+    expect(markup).toContain("Conclusiones principales");
+    expect(markup).not.toContain(">Síntesis ejecutiva</h2>");
+    expect(markup).not.toContain(">Recomendaciones</h2>");
+    expect(markup).not.toContain(">Conclusiones</h2>");
     expect(markup.indexOf('data-report-page="1"')).toBeLessThan(
       markup.indexOf('data-report-page="2"'),
     );

@@ -431,7 +431,11 @@ describe("route scaffolding", () => {
 
     expect(markup).toContain("Informe de huella de carbono de producto");
     expect(markup).toContain("Contexto del análisis");
+    expect(markup).toContain("Indicadores clave");
     expect(markup).toContain("Productos con mayor huella agregada");
+    expect(markup).toContain("Líneas de acción prioritarias");
+    expect(markup).toContain("Conclusiones principales");
+    expect(markup).toContain("Síntesis ejecutiva de resultados PCF");
     expect(markup).toContain("Preparado con");
     expect(markup).toContain("Footprint Mappa logo");
     expect(markup).toContain("Descargar PDF");

@@ -14,7 +14,7 @@ export function ReportRecommendationsSection({
       id="recommendations"
       sectionNumber="6"
       eyebrow="Recomendaciones"
-      title="Recomendaciones"
+      title="Líneas de acción prioritarias"
       description="Aspectos que conviene revisar a partir de la distribución observada en los datos disponibles."
     >
       <ol className="divide-y divide-black/10 border-y border-black/10">
