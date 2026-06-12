@@ -23,7 +23,7 @@ function ReportCoverMock({ selectedBrandId }: ReportPreviewCardProps) {
   return (
     <div className="relative aspect-[0.72] min-h-[28rem] overflow-hidden rounded-[0.85rem] border border-black/6 bg-white px-4 py-5 pb-[8.5rem] shadow-[0_14px_30px_rgba(49,32,77,0.07)] sm:px-5 md:h-[38rem] md:aspect-auto xl:h-auto xl:aspect-[0.72]">
       <div
-        className="h-1.5 w-16 rounded-full"
+        className="h-1.5 w-[8.75rem] rounded-full"
         style={{ backgroundColor: brand.primaryColor }}
       />
 
@@ -87,10 +87,10 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
       <div className="mb-4 flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-sm font-semibold tracking-[-0.02em] text-[#241b3c]">
-            Vista del PDF generado
+            Vista previa del informe
           </p>
           <p className="mt-1 text-sm leading-6 text-[#6c6679]">
-            Previsualización del estilo aplicado al informe antes de exportarlo.
+            Así se aplicará el preset visual al informe generado.
           </p>
         </div>
         <span
@@ -110,7 +110,7 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
           <div className="mx-auto max-w-[28rem] rounded-[0.9rem] bg-white p-2.5">
             <div className="relative aspect-[0.66] overflow-hidden rounded-[0.85rem] border border-black/6 bg-white px-4 py-4 pb-[6.5rem] shadow-[0_12px_26px_rgba(49,32,77,0.06)]">
               <div
-                className="h-1.5 w-12 rounded-full"
+                className="h-1.5 w-[6.75rem] rounded-full"
                 style={{ backgroundColor: brand.primaryColor }}
               />
               <div className="mt-5 flex min-h-[2rem] items-center">
@@ -158,7 +158,7 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
           </div>
 
           <div className="rounded-[0.9rem] bg-white p-3 ring-1 ring-black/5">
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#9a90ac]">
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#716276]">
               Estructura del informe
             </p>
             <ul className="mt-2 divide-y divide-black/6">
@@ -180,7 +180,7 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
           </div>
 
           <div className="min-w-0 border-l border-black/6 bg-white px-4 py-3.5 sm:px-4 sm:py-4">
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#9a90ac]">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#716276]">
               Estructura del informe
             </p>
 
@@ -215,7 +215,8 @@ export function ReportPreviewCard({ selectedBrandId }: ReportPreviewCardProps) {
           </svg>
         </span>
         <p>
-          La vista completa se genera automáticamente después de subir el CSV.
+          La estructura mostrada es orientativa. El informe completo se genera
+          con los datos del CSV.
         </p>
       </div>
     </aside>

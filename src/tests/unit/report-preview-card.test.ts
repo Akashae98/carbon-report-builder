@@ -22,6 +22,16 @@ function renderPreview(selectedBrandId: "relats" | "demo-industrial" = "relats")
 }
 
 describe("Home report preview", () => {
+  it("presents the static document as a preview of the generated report", () => {
+    const markup = renderPreview();
+
+    expect(markup).toContain("Vista previa del informe");
+    expect(markup).toContain(
+      "Así se aplicará el preset visual al informe generado.",
+    );
+    expect(markup).not.toContain("Vista del PDF generado");
+  });
+
   it("shows the complete real report structure in mobile and desktop layouts", () => {
     const markup = renderPreview();
 
@@ -52,5 +62,11 @@ describe("Home report preview", () => {
       "Síntesis ejecutiva de resultados PCF para Demo Industrial",
     );
     expect(markup).toContain("Generado por Footprint Mappa");
+  });
+
+  it("explains that the Home preview is an indicative report structure", () => {
+    expect(renderPreview()).toContain(
+      "La estructura mostrada es orientativa. El informe completo se genera con los datos del CSV.",
+    );
   });
 });

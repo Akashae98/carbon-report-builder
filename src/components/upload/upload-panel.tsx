@@ -30,7 +30,7 @@ function StandardChip({ label, status }: StandardChipProps) {
       className={`inline-flex items-center rounded-full px-2.5 py-1 text-[0.78rem] font-medium tracking-[-0.01em] ${
         isActive
           ? "bg-[#f7f3fc] text-[#63517d] ring-1 ring-[#e7ddf6]"
-          : "bg-[#fff7f3] text-[#9b715f] ring-1 ring-[#efddd5]"
+          : "bg-[#fff7f3] text-[#845b49] ring-1 ring-[#efddd5]"
       }`}
     >
       {label}
@@ -209,18 +209,28 @@ export function UploadPanel({
       <div className="mb-4 flex flex-col gap-2.5 sm:mb-5 sm:gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <StandardChip label="PCF ISO 14067" status="active" />
-          <StandardChip label="OCF ISO 14064" status="soon" />
-          <span className="rounded-full bg-[#fff4ef] px-2 py-1 text-[0.68rem] font-medium text-[#cc7e66] ring-1 ring-[#f3ddd3]">
-            Próximamente
-          </span>
+          <StandardChip
+            label="OCF ISO 14064 · Próximamente"
+            status="soon"
+          />
         </div>
 
         <div className="max-w-[42rem]">
           <h2 className="text-[1.65rem] font-semibold leading-[1.2] tracking-[-0.05em] text-[#241b3c] sm:text-[1.85rem] sm:leading-[1.18]">
             Sube tu CSV y genera la vista previa del informe
           </h2>
-          <p className="mt-2 text-[0.95rem] leading-6 text-[#666076] sm:mt-2.5 sm:text-[0.98rem] sm:leading-7">
-            Acepta CSV con estructura PCF.
+          <p className="mt-2 flex flex-wrap items-baseline gap-x-1.5 text-[0.95rem] leading-6 text-[#666076] sm:mt-2.5 sm:text-[0.98rem] sm:leading-7">
+            <span>Acepta CSV con estructura PCF.</span>
+            <span className="inline-flex items-baseline gap-1.5">
+              <span aria-hidden="true">·</span>
+              <a
+                href="/samples/sample_pcf_iso_14067.csv"
+                download
+                className="rounded-sm font-medium text-[#6d3bcf] underline decoration-[#cfc0ed] underline-offset-4 transition hover:text-[#5f31b8] hover:decoration-[#9f83d8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6d3bcf]"
+              >
+                Descargar ejemplo
+              </a>
+            </span>
           </p>
         </div>
       </div>
@@ -235,7 +245,7 @@ export function UploadPanel({
               Preset visual del informe
             </p>
             <p className="mt-0.5 text-[0.72rem] leading-4 text-[#7b738b]">
-              Se aplicar&aacute; a la vista previa y al PDF.
+              Se aplicar&aacute; al informe generado.
             </p>
           </div>
 
@@ -246,7 +256,7 @@ export function UploadPanel({
               return (
                 <label
                   key={brand.id}
-                  className={`inline-flex cursor-pointer items-center gap-2 rounded-full px-2.5 py-1.5 text-[0.76rem] font-semibold transition ring-1 ${
+                  className={`inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full px-2.5 py-1.5 text-[0.76rem] font-semibold transition ring-1 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#6d3bcf] ${
                     isSelected
                       ? "bg-[#fff7f3] text-[#30264b] ring-[#ffb29f]"
                       : "bg-[#faf9fd] text-[#6d657e] ring-black/6 hover:ring-[#ead5cb]"
@@ -320,8 +330,7 @@ export function UploadPanel({
                 Arrastra tu archivo CSV aquí
               </p>
               <p className="text-sm leading-6 text-[#6b6578]">
-                O selecciona un archivo desde tu dispositivo para generar la
-                vista previa.
+                Arrastra tu archivo CSV o selecciónalo desde tu dispositivo.
               </p>
             </div>
 
@@ -337,7 +346,7 @@ export function UploadPanel({
 
             <label
               htmlFor="csv-file-input"
-              className={`inline-flex w-full cursor-pointer items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition sm:w-auto ${
+              className={`inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#6d3bcf] sm:w-auto ${
                 selectedFile
                   ? "bg-white text-[#6d3bcf] ring-1 ring-[#d9ccf4] hover:bg-[#f8f5ff] hover:ring-[#c8b6ed]"
                   : "bg-[#6d3bcf] text-white shadow-[0_12px_24px_rgba(109,59,207,0.18)] hover:bg-[#5f31b8]"
@@ -384,7 +393,7 @@ export function UploadPanel({
               <button
                 type="button"
                 onClick={() => updateSelectedFile(null)}
-                className="inline-flex h-9 min-w-fit items-center justify-center whitespace-nowrap rounded-[0.9rem] px-3 text-xs font-semibold text-[#8d849e] ring-1 ring-black/6 transition hover:bg-[#f7f5fb] hover:text-[#5f5478]"
+                className="inline-flex min-h-11 min-w-fit items-center justify-center whitespace-nowrap rounded-[0.9rem] px-3 text-xs font-semibold text-[#8d849e] ring-1 ring-black/6 transition hover:bg-[#f7f5fb] hover:text-[#5f5478] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6d3bcf]"
               >
                 Quitar archivo
               </button>
@@ -405,7 +414,7 @@ export function UploadPanel({
 
         <div className="flex justify-end border-t border-black/6 pt-4">
           <button
-            className="inline-flex w-full items-center justify-center rounded-full bg-[#ff6c4d] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(255,108,77,0.16)] transition hover:bg-[#f25939] disabled:cursor-not-allowed disabled:bg-[#f2e7e5] disabled:text-[#a99b99] disabled:shadow-none sm:w-auto sm:self-auto"
+            className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#ff6c4d] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(255,108,77,0.16)] transition hover:bg-[#f25939] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff6c4d] disabled:cursor-not-allowed disabled:bg-[#f2e7e5] disabled:text-[#706260] disabled:shadow-none sm:w-auto sm:self-auto"
             type="submit"
             disabled={isPending || !canGeneratePreview}
           >
