@@ -16,6 +16,8 @@ application. It replaces the initial multi-page template proposal.
 
 The web preview and exported PDF use the same report sections and persisted job
 data. Interactive controls are outside the printable report.
+Report timestamps are stored in UTC and rendered in `Europe/Madrid` for a
+consistent reviewer-facing output.
 
 ## Page 1: Cover
 

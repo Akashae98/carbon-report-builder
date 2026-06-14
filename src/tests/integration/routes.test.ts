@@ -106,6 +106,34 @@ describe("route scaffolding", () => {
     expect(saved?.derivedMetrics.topContributorStage).toBe("Use");
   });
 
+  it("reuses one timestamp for upload and job creation", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-06-14T08:15:00.000Z"));
+
+    const formData = new FormData();
+    formData.set(
+      "file",
+      new File([readSamplePcfCsv()], "sample_pcf.csv", { type: "text/csv" }),
+    );
+
+    const response = await postUploadRoute(
+      new Request("http://localhost/api/reports/upload", {
+        method: "POST",
+        body: formData,
+      }),
+    );
+    const payload = (await response.json()) as { jobId: string };
+    createdJobIds.push(payload.jobId);
+
+    expect(response.status).toBe(201);
+    await expect(reportJobStore.read(payload.jobId)).resolves.toMatchObject({
+      createdAt: "2026-06-14T08:15:00.000Z",
+      upload: {
+        receivedAt: "2026-06-14T08:15:00.000Z",
+      },
+    });
+  });
+
   it("persists a selected Demo Industrial brand through the upload route", async () => {
     const formData = new FormData();
     formData.set(

@@ -82,10 +82,18 @@ describe("getReportPreviewModel", () => {
     expect(preview.branding.panelColor).toBe(brand.secondaryColor);
     expect(preview.branding.textColor).toBe(brand.textColor);
     expect(preview.document.subtitle).toBe(brand.reportSubtitle);
+    expect(preview.document.generatedAtLabel).toBe("9 de junio de 2026, 12:30");
     expect(preview.lifecycle.items).toHaveLength(6);
     expect(preview.ranking.items.length).toBeLessThanOrEqual(5);
     expect(preview.ranking.items[0]?.rank).toBe(1);
     expect(preview.narratives.recommendations).toHaveLength(3);
+  });
+
+  it("renders report timestamps in Europe/Madrid", () => {
+    const preview = getReportPreviewModel(createJob());
+
+    expect(preview.document.generatedAtLabel).toBe("9 de junio de 2026, 12:30");
+    expect(preview.document.generatedAtLabel).not.toBe("9 de junio de 2026, 10:30");
   });
 
   it("uses Demo Industrial branding when the job brandId selects it", () => {
