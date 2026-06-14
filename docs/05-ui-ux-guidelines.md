@@ -6,6 +6,7 @@ Style:
 - SaaS
 - Modern
 - Technical
+- Light-first workspace
 
 Colors:
 - #fdc2d8
@@ -14,57 +15,55 @@ Colors:
 - #041282
 
 Theme:
-- Dark first
-- Gradient accents
+- Light first
+- Clean operational interface
+- Restrained gradient and accent usage
 
-## PDF Branding (Relats)
+## Report Branding
 
-Colors:
-- #ff5710
-- #1c1c1c
-- #eae4df
-- #ffffff
+Client report surfaces use brand profiles rather than the application theme.
 
-Style:
-- Corporate
-- Industrial
-- Clean
-- Print friendly
+Current local presets:
+- Relats
+- Demo Industrial
 
-Current demo behavior:
-- Relats is the visible demo client for report preview and PDF-oriented report surfaces.
-- This does not define the product identity of Footprint Mappa itself.
+Relats remains the default demo client. These presets are visual only; they are
+not authenticated tenants or authorization boundaries.
 
-Future theming direction:
-- App branding = Footprint Mappa
-- Report branding = client theme
-- Relats remains the default demo client until client-theming is generalized
+## Upload and Report Experience
 
-## Dashboard
-
-Sections:
-- Upload CSV
-- KPI Cards
-- Charts
-- Report Preview
-- Export PDF
+Main surfaces:
+- Home hero with a three-step flow: upload, preview, PDF
+- CSV upload panel
+- Brand preset selector
+- Report preview card
+- Server-rendered report preview
+- PDF export button with loading and error states
 
 Principles:
 - Clarity
 - Readability
 - Consistency
 - Professional presentation
+- Preview-before-export confidence
 
 ## Responsive Rules
 
 - Primary mobile breakpoint: `sm` (`640px`)
 - Mobile flow indicator: compact 3-step horizontal stepper with labels `Subir`, `Vista previa`, `PDF`
-- Desktop flow indicator: keep the existing pill-based workflow chips
+- Desktop flow indicator: pill-based workflow chips
 - Mobile upload panel: reduced padding, tighter spacing, shorter dropzone, full-width primary CTA
-- Mobile report preview: compact cover thumbnail plus 3 key sections only
-- Desktop report preview: full cover plus complete section index
-- Card radii: 16px on mobile, 20px on desktop for main report surfaces
-- Report metadata: client, source file and generation date stay visible; `Job ID` remains inside `Detalles técnicos`
-- Report KPI layout: a single divided strip instead of nested cards
+- Mobile report preview card: compact cover thumbnail plus key sections
+- Desktop report preview card: full cover mock plus complete section index
+- Report metadata: client, source file, and generation date stay visible
+- Report KPI layout: divided strip instead of nested cards
 - Report structure layout: bordered rows instead of stacked inner cards
 - Mobile chart layout: labels above bars, larger text, percentage aligned right
+
+## Preview and PDF Consistency
+
+- Preview uses the same report sections and brand profile as the generated PDF.
+- The current PCF MVP report is intentionally paginated into 4 A4 pages.
+- The preview includes a PDF download button outside the printable area.
+- Print CSS hides interactive controls and preserves report colors.
+- The PDF filename includes the selected brand id.

@@ -10,20 +10,22 @@ Features:
 - Upload CSV
 - Validate data
 - Generate metrics
-- Dashboard
 - Report preview
 - PDF export
+- Client brand preset selection
+- Production persistence with Xano
+- Configurable local persistence with filesystem (default) or Xano
 
 ## Future Scope
 - OCF support
 - Multiple report templates
 - AI summaries
+- Report history and comparison
 
 ## Success Criteria
 A user can upload a CSV and export a professional report in minutes.
 
 ## Non Goals
 - Carbon calculations
-- Authentication
-- Database persistence
 - Admin panel
+- Report history UI
