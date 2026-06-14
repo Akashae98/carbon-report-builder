@@ -10,8 +10,8 @@ broader SaaS platform.
 
 ## What it is
 
-The project generates a product carbon footprint report from a CSV that
-contains already calculated PCF values. The application:
+The application transforms a CSV containing pre-calculated PCF values into a
+professional product carbon footprint report. It:
 
 - validates the file structure
 - normalizes the data
@@ -46,11 +46,11 @@ Included in the MVP:
 
 Out of scope for now:
 
+- full branding editor
 - authentication and multi-user support
 - analytics dashboard
 - complete report history
 - longitudinal comparisons
-- full branding editor
 - operational OCF runtime
 - certified PCF calculation engine
 
@@ -66,9 +66,9 @@ Persistence is configured through `REPORT_JOB_STORE_DRIVER`.
 - The target hosted deployment uses Xano-backed persistence.
 
 The application already supports server-to-server authentication with
-`X-API-Key` for the Xano integration when `XANO_API_KEY` is configured.
-Effective access validation in Xano, rate limiting, and abuse control are still
-outside the MVP scope and remain later production-oriented work.
+`X-API-Key` for the Xano integration when `XANO_API_KEY` is configured, but
+effective access validation in Xano, rate limiting, and abuse control remain
+outside the MVP scope.
 
 ## Stack
 
@@ -96,14 +96,14 @@ the technical documentation.
 
 ## Documentation
 
-- [Short delivery README](docs/delivery-readme.md)
-- [Build / reuse / buy research](docs/research.md)
-- [Local setup](docs/setup.md)
-- [Vercel and Xano deployment](docs/deployment.md)
+- [Full documentation index](docs/README.md)
 - [Architecture](docs/02-architecture.md)
 - [Data model](docs/03-data-model.md)
+- [Local setup](docs/setup.md)
+- [Vercel and Xano deployment](docs/deployment.md)
+- [Build / reuse / buy research](docs/research.md)
+- [Short delivery README](docs/delivery-readme.md)
 - [Implementation status](docs/06-implementation-plan.md)
-- [Full documentation index](docs/README.md)
 
 ## Brands and visual assets
 
