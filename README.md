@@ -10,7 +10,7 @@ broader SaaS platform.
 
 ## What it is
 
-Footprint Mappa generates a product carbon footprint report from a CSV that
+The project generates a product carbon footprint report from a CSV that
 contains already calculated PCF values. The application:
 
 - validates the file structure
