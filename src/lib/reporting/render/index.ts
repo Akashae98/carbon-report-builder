@@ -39,6 +39,7 @@ export function getReportPreviewModel(
       generatedAtLabel: new Intl.DateTimeFormat("es-ES", {
         dateStyle: "long",
         timeStyle: "short",
+        timeZone: "Europe/Madrid",
       }).format(new Date(job.createdAt)),
       sourceFileName: job.upload.fileName,
       generatedBy: `Elaborado con ${brand.providerName}`,

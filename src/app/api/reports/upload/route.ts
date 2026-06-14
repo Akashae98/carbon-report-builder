@@ -41,11 +41,12 @@ export async function POST(request: Request) {
     );
   }
 
+  const now = new Date().toISOString();
   const upload: ReportUploadMetadata = {
     fileName: file.name,
     contentType: file.type || "text/csv",
     size: file.size,
-    receivedAt: new Date().toISOString(),
+    receivedAt: now,
   };
 
   if (file.size > MAX_REPORT_UPLOAD_SIZE_BYTES) {
@@ -88,7 +89,7 @@ export async function POST(request: Request) {
     brandId,
     reportType: "pcf",
     status: "draft",
-    createdAt: new Date().toISOString(),
+    createdAt: now,
     upload,
     schemaValidation: validation,
     normalizedDataset,
